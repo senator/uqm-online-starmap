@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Map</title>
+        <style type="text/css">
+            body {
+                background-color: #000040;
+            }
+            #starmap {
+                background-color: black;
+                border: 2px #a000a0 outset;
+            }
+        </style>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+        <script src="starmap.js"></script>
+        <script>
+            var star_map;
+            $(document).ready(
+                function() { star_map = new StarMap($("#starmap").get(0)); }
+            );
+        </script>
+    </head>
+    <body>
+        <canvas id="starmap" width="500" height="500">
+    </body>
+</html>
