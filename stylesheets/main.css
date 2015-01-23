@@ -1,0 +1,19 @@
+                /*border: 2px #a000a0 outset;*/
+body { background-color: #000040; }
+
+div#starmap_layers {
+    position: relative;
+}
+div#starmap_layers canvas {
+    border: 2px #a000a0 outset;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+canvas#grid {
+    background-color: black;
+    z-index: 1;
+}
+canvas#starmap { z-index: 2; }
+canvas#overlay { z-index: 3; }
