@@ -1,19 +1,22 @@
-                /*border: 2px #a000a0 outset;*/
-body { background-color: #000040; }
+body { margin: 0; }
+
+nav#menu { height: 12vh; }
 
 div#starmap_layers {
     position: relative;
+    height: 76vh;
 }
+
 div#starmap_layers canvas {
-    border: 2px #a000a0 outset;
     position: absolute;
     left: 0;
     top: 0;
 }
-
-canvas#grid {
+canvas#underlay {
     background-color: black;
     z-index: 1;
 }
-canvas#starmap { z-index: 2; }
+canvas#canvas { z-index: 2; }
 canvas#overlay { z-index: 3; }
+
+div#readout { height: 12vh; }

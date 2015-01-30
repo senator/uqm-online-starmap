@@ -9,28 +9,19 @@
                 $(document).ready(function() {
                     // Stuff a reference to the star_map instance in the
                     // global namespace for easier debugging.
-                    window.star_map = new starmap.StarMap( {
-                        underlay: $("#grid").get(0),
-                        canvas: $("#starmap").get(0),
-                        overlay: $("#overlay").get(0),
-                        infodisplay: $("#info").get(0)
-                    } );
+                    window.star_map = new starmap.StarMap($("body"));
                 });
             });
         </script>
     </head>
     <body>
-        <!-- XXX TODO, it's close, but the crosshairs as drawn seem to fall ever so slightly left. should we fix? -->
-        <div style="height: 504px;"> <!-- must be display: block (default) and have height explicity set to the heigh the #starmap_layers div *actually* takes up. because that div is postion:relative, it "officially" takes 0 px of height, but you know what i mean. -->
-            <div id="starmap_layers">
-                <canvas id="grid" width="500" height="500"></canvas>
-                <canvas id="starmap" width="500" height="500"></canvas>
-                <canvas id="overlay" width="500" height="500">
-                    You need a browser that supports HTML5 to use this.
-                </canvas>
-            </div>
+        <nav id="menu">menu</nav>
+        <div id="starmap_layers">
+            <canvas id="underlay"></canvas>
+            <canvas id="canvas"></canvas>
+            <canvas id="overlay">Your browser needs HTML5 support.</canvas>
         </div>
         <div style="clear: all"></div>
-        <div id="info">Hover over a star.</div>
+        <div id="readout">Hover over a star.</div>
     </body>
 </html>
