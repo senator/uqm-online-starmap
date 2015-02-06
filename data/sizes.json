@@ -1,1 +1,1 @@
-[{"name":"dwarf","factor":1},{"name":"giant","factor":2},{"name":"super giant","factor":4}]
+[{"name":"dwarf","factor":1,"bullet":8226},{"name":"giant","factor":2,"bullet":9679},{"name":"super giant","factor":4,"bullet":11044}]

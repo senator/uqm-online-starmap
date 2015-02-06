@@ -1,0 +1,6 @@
+nav#menu { height: 8vh; }
+div#starmap_layers {
+    position: relative;
+    height: 1px;
+}
+div#readout { }

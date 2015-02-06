@@ -3,13 +3,20 @@
     <head>
         <title>Map</title>
         <link rel="stylesheet" href="stylesheets/main.css">
+        <link rel="stylesheet" media="screen and (orientation: portrait)"
+            href="stylesheets/portrait.css">
+        <link rel="stylesheet" media="screen and (orientation: landscape)"
+            href="stylesheets/landscape.css">
         <script data-main="lib/app" src="thirdparty/require.js"></script>
         <script>
-            require(['starmap'], function(starmap) {
+            require(["starmap"], function(starmap) {
                 $(document).ready(function() {
                     // Stuff a reference to the star_map instance in the
                     // global namespace for easier debugging.
-                    window.star_map = new starmap.StarMap($("body"));
+                    window.star_map = new starmap.StarMap(
+                        new starmap.StarMapViewPort(document.documentElement),
+                        $("body")
+                    );
                 });
             });
         </script>
@@ -21,7 +28,6 @@
             <canvas id="canvas"></canvas>
             <canvas id="overlay">Your browser needs HTML5 support.</canvas>
         </div>
-        <div style="clear: all"></div>
         <div id="readout">Hover over a star.</div>
     </body>
 </html>

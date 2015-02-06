@@ -1,0 +1,14 @@
+nav#menu {
+    float: left;
+    width: 8vw;
+}
+
+div#starmap_layers {
+    float: left;
+    position: relative;
+    height: 1px;
+}
+
+div#readout {
+    float: left;
+}

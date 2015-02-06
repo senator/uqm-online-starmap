@@ -1,11 +1,13 @@
-body { margin: 0; }
-
-nav#menu { height: 12vh; }
-
-div#starmap_layers {
-    position: relative;
-    height: 76vh;
+body {
+    margin: 0;
+    background-color: black;
+    color: white;
 }
+
+/* Important: Do not add any padding/margin to the canvases or
+ * their containing div.  There's no code anymore in the JS
+ * to account for that when doing the positioning, scaling, and
+ * responsive calculations.  */
 
 div#starmap_layers canvas {
     position: absolute;
@@ -19,4 +21,5 @@ canvas#underlay {
 canvas#canvas { z-index: 2; }
 canvas#overlay { z-index: 3; }
 
-div#readout { height: 12vh; }
+#readout { text-align: center; }
+.star_name { font-size: 150%; }
