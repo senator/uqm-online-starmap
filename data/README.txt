@@ -1,0 +1,9 @@
+The JSON files in this directory contain data coaxed out of the source
+code of The Ur-Quan Masters (thank you, contributors to that excellent
+project!).
+
+These files have whitespace in them to make any necessary editing or
+tweaking easier.  They are not used directory by the application!  You
+must run the $PROJECT_ROOT/scripts/make-data.js script (requires NodeJS)
+to build a condensed data module suitable for the app to load using
+RequireJS.

@@ -1,5 +1,6 @@
 Do not delete this file. Git doesn't store empty directories.
 
 This directory is here to receive the output of the make-data.js script,
-which builds a condensed file loadable by RequireJS from the JSON files
-in the $PROJECT_ROOT/data directory.
+which builds a condensed RequireJS module from the JSON files in the
+$PROJECT_ROOT/data directory.  It's the built module that is actually
+loaded by the app to get the game data.  
