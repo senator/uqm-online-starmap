@@ -1,5 +1,5 @@
-define(["jquery", "timer", "triggers_interface"],
-  function($, timer, triggers_interface) {
+define(["jquery", "timer", "starmap/gamedata/condensed"],
+  function($, timer, game_data) {
 
   /* Module-wide "private" variables */
 
@@ -340,8 +340,6 @@ define(["jquery", "timer", "triggers_interface"],
   /* main exported class */
   function StarMap() {
 
-    triggers_interface.mixin(this);
-
     var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
     var OTHER_ELEMENT_NAMES = ["menu", "readout"];
 
@@ -374,16 +372,11 @@ define(["jquery", "timer", "triggers_interface"],
 
       this.overlay = new StarMapOverlay(this.elements.overlay,
           this.canvas_hit_test.bind(this));
-      
-      /* XXX If I use Require to load the data, I can get rid of this
-       * custom when/trigger stuff... */
-      this.when("loaded", ["stars","sizes","colors","names","prefixes"],
-          (function() {
-            this.on_resize(); /* Once now, and... */
-            $(window).off("resize").resize(this.on_resize.bind(this));
-          }).bind(this));
+    
+      this.prepare_game_data(game_data);
 
-      this.load_data();
+      this.on_resize(); /* Once now, and... */
+      $(window).off("resize").resize(this.on_resize.bind(this));
     };
 
     this.canvas_hit_test = function canvas_hit_test(event_x, event_y) {
@@ -463,33 +456,12 @@ define(["jquery", "timer", "triggers_interface"],
       this.canvas_top = rect.top;
     };
 
-    this.load_data = function() {
-      var self = this;
-
-      $.getJSON("data/stars.json", function(data) {
-        self.stars = new StarData(data);
-        self.trigger("loaded", "stars");
-      });
-
-      $.getJSON("data/sizes.json", function(data) {
-        self.size_lookup = data;
-        self.trigger("loaded", "sizes");
-      });
-
-      $.getJSON("data/colors.json", function(data) {
-        self.color_lookup = data;
-        self.trigger("loaded", "colors");
-      });
-
-      $.getJSON("data/prefixes.json", function(data) {
-        self.prefix_lookup = data;
-        self.trigger("loaded", "prefixes");
-      });
-
-      $.getJSON("data/names.json", function(data) {
-        self.name_lookup = data;
-        self.trigger("loaded", "names");
-      });
+    this.prepare_game_data = function(game_data) {
+        this.stars = new StarData(game_data.stars);
+        this.size_lookup = game_data.sizes;
+        this.color_lookup = game_data.colors;
+        this.prefix_lookup = game_data.prefixes;
+        this.name_lookup = game_data.names;
     };
 
     this.draw_all = function() {

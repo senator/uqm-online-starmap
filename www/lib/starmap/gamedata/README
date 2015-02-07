@@ -1,0 +1,5 @@
+Do not delete this file. Git doesn't store empty directories.
+
+This directory is here to receive the output of the make-data.js script,
+which builds a condensed file loadable by RequireJS from the JSON files
+in the $PROJECT_ROOT/data directory.
