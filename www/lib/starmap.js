@@ -1,28 +1,14 @@
-define(["jquery", "timer", "starmap/gamedata/condensed"],
-  function($, timer, game_data) {
-
-  /* Module-wide "private" variables */
-
-  var CIRCLE_RADIAN = 2 * Math.PI;
-  var NOMINAL_WIDTH = 10000;
-  var NOMINAL_HEIGHT = 10000;
-  var NOMINAL_DWARF_SIZE = 10;
-
-  /* Module-wide "private" methods */
-
-  function star_coords_to_canvas(x, y, scale) {
-    return [Math.round(x * scale.xfactor),
-        Math.round((NOMINAL_HEIGHT - y) * scale.yfactor)];
-  }
+define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condensed", "timer"],
+  function($, constants, util, game_data, timer) {
 
   /* "private" classes */
 
   function StarMapScale() {
     this._init = function(canvas_width, canvas_height) {
-      this.xfactor = canvas_width / NOMINAL_WIDTH;
-      this.yfactor = canvas_height / NOMINAL_HEIGHT;
+      this.xfactor = canvas_width / constants.NOMINAL_WIDTH;
+      this.yfactor = canvas_height / constants.NOMINAL_HEIGHT;
       this.star_size_factor = ((this.xfactor + this.yfactor) / 2) *
-        NOMINAL_DWARF_SIZE;
+        constants.NOMINAL_DWARF_SIZE;
     };
 
     this._init.apply(this, arguments);
@@ -39,8 +25,8 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
     var X_BUCKETS = 10;
     var Y_BUCKETS = 10;
 
-    var X_DIVISOR = NOMINAL_WIDTH / X_BUCKETS;
-    var Y_DIVISOR = NOMINAL_HEIGHT / Y_BUCKETS;
+    var X_DIVISOR = constants.NOMINAL_WIDTH / X_BUCKETS;
+    var Y_DIVISOR = constants.NOMINAL_HEIGHT / Y_BUCKETS;
 
     // "private" methods
 
@@ -131,7 +117,7 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
     this.drawing_parameters = function(index,scale,size_lookup,color_lookup) {
       var row = this.list[index];
       var color_row = color_lookup[row[3]];
-      var point = star_coords_to_canvas(row[0], row[1], scale);
+      var point = util.star_coords_to_canvas(row[0], row[1], scale);
 
       return {
         color_rgb: color_row.rgb,
@@ -175,8 +161,8 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
   }
 
   function StarMapGrid() {
-    var GRID_X_STEP = NOMINAL_WIDTH / 20;
-    var GRID_Y_STEP = NOMINAL_HEIGHT / 20;
+    var GRID_X_STEP = constants.NOMINAL_WIDTH / 20;
+    var GRID_Y_STEP = constants.NOMINAL_HEIGHT / 20;
     var GRID_STROKE_STYLE = "#003399";
 
     this._init = function(underlay) {
@@ -191,19 +177,19 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
       this.grid_ctx = this.underlay.getContext("2d");
       this.grid_ctx.strokeStyle = GRID_STROKE_STYLE;
 
-      for (var x = GRID_X_STEP; x < NOMINAL_WIDTH; x += GRID_X_STEP) {
+      for (var x = GRID_X_STEP; x < constants.NOMINAL_WIDTH; x += GRID_X_STEP) {
         var startx = Math.round(x * scale.xfactor);
         this.grid_ctx.beginPath();
         this.grid_ctx.moveTo(startx, 0);
-        this.grid_ctx.lineTo(startx, NOMINAL_HEIGHT);
+        this.grid_ctx.lineTo(startx, constants.NOMINAL_HEIGHT);
         this.grid_ctx.stroke();
       }
 
-      for (var y = GRID_Y_STEP; y < NOMINAL_HEIGHT; y += GRID_Y_STEP) {
+      for (var y = GRID_Y_STEP; y < constants.NOMINAL_HEIGHT; y += GRID_Y_STEP) {
         var starty = Math.round(y * scale.yfactor);
         this.grid_ctx.beginPath();
         this.grid_ctx.moveTo(0, starty);
-        this.grid_ctx.lineTo(NOMINAL_WIDTH, starty);
+        this.grid_ctx.lineTo(constants.NOMINAL_WIDTH, starty);
         this.grid_ctx.closePath();
         this.grid_ctx.stroke();
       }
@@ -262,7 +248,8 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
       this.overlay_ctx.stroke();
 
       this.overlay_ctx.beginPath();
-      this.overlay_ctx.arc(canvas_x, canvas_y, radius, 0, CIRCLE_RADIAN);
+      this.overlay_ctx.arc(canvas_x, canvas_y, radius, 0,
+          constants.CIRCLE_RADIAN);
       this.overlay_ctx.stroke();
     };
 
@@ -401,7 +388,7 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
 
         /* Return canvas coordinates of star so the overlay object can
          * draw a crosshair. */
-        return star_coords_to_canvas(star.x, star.y, this.scale);
+        return util.star_coords_to_canvas(star.x, star.y, this.scale);
       } else {
 
         this.last_hit = null;
@@ -472,24 +459,26 @@ define(["jquery", "timer", "starmap/gamedata/condensed"],
             this.size_lookup, this.color_lookup);
 
         this.star_ctx.beginPath();
-        this.star_ctx.arc(params.x, params.y, params.radius, 0, CIRCLE_RADIAN);
+        this.star_ctx.arc(params.x, params.y, params.radius, 0,
+            constants.CIRCLE_RADIAN);
         this.star_ctx.closePath();
         this.star_ctx.fillStyle = params.color_rgb;
         this.star_ctx.fill();
       }
     };
 
-    /* map coords must be within 0..NOMINAL_WIDTH, 0..NOMINAL_HEIGHT */
+    /* map coords must be within 0..constants.NOMINAL_WIDTH,
+     * 0..constants.NOMINAL_HEIGHT */
     this.clamp_map_coords = function(x, y) {
       if (x < 0)
         x = 0;
-      else if (x >= NOMINAL_WIDTH)
-        x = NOMINAL_WIDTH - 1;
+      else if (x >= constants.NOMINAL_WIDTH)
+        x = constants.NOMINAL_WIDTH - 1;
 
       if (y < 0)
         y = 0;
-      else if (y >= NOMINAL_HEIGHT)
-        y = NOMINAL_HEIGHT - 1;
+      else if (y >= constants.NOMINAL_HEIGHT)
+        y = constants.NOMINAL_HEIGHT - 1;
 
       return [x, y];
     };
