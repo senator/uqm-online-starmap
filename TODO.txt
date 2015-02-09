@@ -1,0 +1,27 @@
+TODO (feature-wise and deeper)
+==============================
+
+- Implement zooming, probably by extending StarMapScale object
+
+- [DONE] Fix color data, any other data derived from enums that
+was out of order.
+
+- Build as Android app with Cordova.
+
+- Fill out menu bar with some (SVG?) icons or other controls
+
+- Readout manager in the JS
+
+- Menu manager in the JS
+
+- HTML clean up
+
+- Star search
+
+- Build just enough of the game source (to do with planet generation) to get
+the mineral and bio counts per star system out of the game and into some data
+file.  For bonus, translate the generation code into JS so that we can
+potentially draw star systems on demand.
+
+- Consider features that allow game players to keep track of systems they've
+already visited (manually or via saved game upload?)

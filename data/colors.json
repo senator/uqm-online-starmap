@@ -1,26 +1,26 @@
 [
   {
-    "name": "Green",
-    "rgb": "#00ff00"
+    "name": "Blue",
+    "rgb": "#3399ff"
   },
   {
-    "name": "White",
-    "rgb": "#ffffff"
+    "name": "Green",
+    "rgb": "#00ff00"
   },
   {
     "name": "Orange",
     "rgb": "#ff9900"
   },
   {
-    "name": "Blue",
-    "rgb": "#3399ff"
+    "name": "Red",
+    "rgb": "#ff0000"
+  },
+  {
+    "name": "White",
+    "rgb": "#ffffff"
   },
   {
     "name": "Yellow",
     "rgb": "#ffff00"
-  },
-  {
-    "name": "Red",
-    "rgb": "#ff0000"
   }
 ]
