@@ -1,330 +1,7 @@
-define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condensed", "timer"],
-  function($, constants, util, game_data, timer) {
+define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
+  "starmap/datamgr", "starmap/scale"],
+  function($, constants, util, ui, datamgr, scale) {
 
-  /* "private" classes */
-
-  function StarMapScale() {
-    this._init = function(canvas_width, canvas_height) {
-      this.xfactor = canvas_width / constants.NOMINAL_WIDTH;
-      this.yfactor = canvas_height / constants.NOMINAL_HEIGHT;
-      this.star_size_factor = ((this.xfactor + this.yfactor) / 2) *
-        constants.NOMINAL_DWARF_SIZE;
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-  /* Sort the stars into 100 buckets covering the map in a 10x10 grid.
-   * This may be helpful in optimizing lookups based on mouse hovering
-   * and tapping the map, or it may be premature optimization.  The cost
-   * of building the index is low (~ 1ms) with the V8 Javascript engine
-   * on an average PC.  Unclear as to performance on mobile devices or IE,
-   * but even at 100 ms, no biggie.
-   */
-  function StarBucketIndex() {
-    var X_BUCKETS = 10;
-    var Y_BUCKETS = 10;
-
-    var X_DIVISOR = constants.NOMINAL_WIDTH / X_BUCKETS;
-    var Y_DIVISOR = constants.NOMINAL_HEIGHT / Y_BUCKETS;
-
-    // "private" methods
-
-    /* This method trusts that x and y are within the map bounds. */
-    function keys_from_coords(x, y) {
-      return [Math.floor(x / X_DIVISOR), Math.floor(y / Y_DIVISOR)];
-    }
-
-    // "public" methods
-
-    this._init = function(list) {
-      this.create_empty_buckets();
-      this.bucketize(list);
-    };
-
-    this.create_empty_buckets = function() {
-      this.buckets = [];
-
-      for (var x = 0; x < X_BUCKETS; x++) {
-        this.buckets.push([]);
-        for (var y = 0; y < Y_BUCKETS; y++) {
-          this.buckets[x].push([]);
-        }
-      }
-    };
-
-    this.bucketize = function(list) {
-      for (var i = 0; i < list.length; i++) {
-        var keys = keys_from_coords(list[i][0], list[i][1]);
-        this.buckets[keys[0]][keys[1]].push(i);
-      }
-    };
-
-    /* This method would be an especially good candiate for a unit test.
-     * Return as many as nine buckets, including the exact hit. */
-    this.adjacent_buckets = function(x, y) {
-      var exact = keys_from_coords(x, y);
-      var results = [];
-
-      for (var x = exact[0] - 1; x < exact[0] + 2; x++) {
-        for (var y = exact[1] - 1; y < exact[1] + 2; y++) {
-          if (x >= 0 && y >= 0 && x < X_BUCKETS && y < Y_BUCKETS) {
-            results.push([x, y]);
-          }
-        }
-      }
-
-      return results;
-    };
-
-    /* Given (x, y) return all stars in immediate and adjancent buckets. */
-    this.get_stars_near = function(x, y) {
-      var self = this;
-
-      return this.adjacent_buckets(x, y).reduce(
-        function(a, b) { return a.concat(self.buckets[b[0]][b[1]]); }, []
-      );
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-  function StarData() {
-    function distance_squared(x1, y1, x2, y2) {
-      return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
-    }
-
-    this._init = function(star_data_list) {
-
-      this.list = star_data_list;
-
-      // x 0
-      // y 1
-      // size_index 2
-      // color_index 3
-      // generator 4
-      // prefix_index 5
-      // name_index 6
-
-      var self = this;
-
-      timer.time_sync_op(
-        function() { self.bucket_index = new StarBucketIndex(self.list); },
-        "Building bucketed star index"
-      );
-    };
-
-    this.drawing_parameters = function(index,scale,size_lookup,color_lookup) {
-      var row = this.list[index];
-      var color_row = color_lookup[row[3]];
-      var point = util.star_coords_to_canvas(row[0], row[1], scale);
-
-      return {
-        color_rgb: color_row.rgb,
-        x: point[0],
-        y: point[1],
-        radius: size_lookup[row[2]].factor * scale.star_size_factor + 1
-      };
-    };
-
-    this.get = function(index) {
-      return this.list[index];
-    };
-
-    this.find_nearest = function(x, y) {
-      var self = this;
-
-      var nearest = this.bucket_index.get_stars_near(x, y).map(
-        function(idx) {
-          /* return [index, dist from (x,y)] */
-          return [idx,
-            distance_squared(x, y, self.list[idx][0], self.list[idx][1])];
-        }
-      ).sort(
-        function(a, b) {
-          /* sort lowest distance to highest */
-          return a[1] - b[1];
-        }
-      )[0];
-
-      /* Note: Only now do we need the *correct* distance between our given x,y
-       * and the nearest star's coordinates.  We don't need it for sorting,
-       * so it's computationally cheaper to avoid Math.sqrt() until now.  */
-      return [nearest[0], Math.sqrt(nearest[1])];
-    };
-
-    this.length = function() {
-      return this.list.length;
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-  function StarMapGrid() {
-    var GRID_X_STEP = constants.NOMINAL_WIDTH / 20;
-    var GRID_Y_STEP = constants.NOMINAL_HEIGHT / 20;
-    var GRID_STROKE_STYLE = "#003399";
-
-    this._init = function(underlay) {
-      this.underlay = underlay;
-    };
-
-    this.draw_grid = function draw_grid(scale) {
-      if (!scale)
-        throw new Error("This method requires an instance of StarMapScale " +
-            "as an argument");
-
-      this.grid_ctx = this.underlay.getContext("2d");
-      this.grid_ctx.strokeStyle = GRID_STROKE_STYLE;
-
-      for (var x = GRID_X_STEP; x < constants.NOMINAL_WIDTH; x += GRID_X_STEP) {
-        var startx = Math.round(x * scale.xfactor);
-        this.grid_ctx.beginPath();
-        this.grid_ctx.moveTo(startx, 0);
-        this.grid_ctx.lineTo(startx, constants.NOMINAL_HEIGHT);
-        this.grid_ctx.stroke();
-      }
-
-      for (var y = GRID_Y_STEP; y < constants.NOMINAL_HEIGHT; y += GRID_Y_STEP) {
-        var starty = Math.round(y * scale.yfactor);
-        this.grid_ctx.beginPath();
-        this.grid_ctx.moveTo(0, starty);
-        this.grid_ctx.lineTo(constants.NOMINAL_WIDTH, starty);
-        this.grid_ctx.closePath();
-        this.grid_ctx.stroke();
-      }
-    };
-
-    this.blank = function() {
-      this.underlay.getContext("2d").clearRect(
-          0, 0, this.underlay.width, this.underlay.height);
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-  function StarMapOverlay() {
-    var OVERLAY_STROKE_STYLE = "#ff00ff";
-
-    this._init = function(overlay, hit_test) {
-      this.overlay = overlay;
-      this.hit_test = hit_test;
-
-      this.reset();
-
-      this.overlay.addEventListener("mousemove", this.on_mousemove.bind(this));
-    };
-
-    this.on_mousemove = function(evt) {
-      /* this.hit_test() should return
-       *  null for clear,
-       *  -1 for no change, or
-       *  [x,y] for new star.
-       */
-      var result = this.hit_test(evt.clientX, evt.clientY);
-
-      if (result) {
-        if (result == -1)
-          return;
-
-        this.blank();
-        this.highlight(result[0], result[1]);
-      } else {
-        this.blank();
-      }
-    };
-
-    this.highlight = function(canvas_x, canvas_y) {
-      var radius = ((this.overlay.width + this.overlay.height) / 2) / 40;
-
-      this.overlay_ctx.beginPath();
-      this.overlay_ctx.moveTo(0, canvas_y);
-      this.overlay_ctx.lineTo(this.overlay.width, canvas_y);
-      this.overlay_ctx.stroke();
-
-      this.overlay_ctx.beginPath();
-      this.overlay_ctx.moveTo(canvas_x, 0);
-      this.overlay_ctx.lineTo(canvas_x, this.overlay.height);
-      this.overlay_ctx.stroke();
-
-      this.overlay_ctx.beginPath();
-      this.overlay_ctx.arc(canvas_x, canvas_y, radius, 0,
-          constants.CIRCLE_RADIAN);
-      this.overlay_ctx.stroke();
-    };
-
-    this.blank = function() {
-      this.overlay_ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
-    };
-
-    this.reset = function reset() {
-      this.overlay_ctx = overlay.getContext("2d");
-      this.overlay_ctx.strokeStyle = OVERLAY_STROKE_STYLE;
-      this.blank();
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-
-  function StarMapViewPort() {
-    /* These constants should agree with the CSS, and are expressed as ratio
-     * where the denomiator is screen width or height, according to the
-     * variable name. */
-    var LANDSCAPE_MENU = 0.08;
-    var LANDSCAPE_MIN_READOUT = 0.2;
-    var LANDSCAPE_MIN_CANVAS = 1 - LANDSCAPE_MIN_READOUT - LANDSCAPE_MENU;
-
-    this._init = function _init(ref_dom_obj) {
-      this.ref_dom_obj = ref_dom_obj;
-    };
-
-    this.calculate = function calculate(ref_dom_obj) {
-      if (!ref_dom_obj)
-        ref_dom_obj = this.ref_dom_obj;
-
-      var w = ref_dom_obj.clientWidth, h = ref_dom_obj.clientHeight;
-      /* When the viewport is square, CSS media queries for portrait mode,
-       * not landscape, seem to apply, at least in Chromium. Is that reliable?
-       */
-      if (w > h) {
-        /* landscape */
-        var pref2w = h;
-        var pref3w = w - Math.ceil(LANDSCAPE_MENU * w) - h;
-
-        if (pref3w < LANDSCAPE_MIN_READOUT * w) {
-            pref3w = Math.floor(LANDSCAPE_MIN_READOUT * w);
-            pref2w = Math.floor(LANDSCAPE_MIN_CANVAS * w);
-        }
-
-        return {
-          dominant: "width",
-          canvas: [pref2w, pref2w],
-          readout: [pref3w - 1, h]
-        };
-      } else {
-        /* portrait */
-        var pref2h = w;
-        var pref3h = h - Math.ceil(LANDSCAPE_MENU * h) - w;
-
-        if (pref3h < LANDSCAPE_MIN_READOUT * h) {
-            pref3h = Math.floor(LANDSCAPE_MIN_READOUT * h);
-            pref2h = Math.floor(LANDSCAPE_MIN_CANVAS * h);
-        }
-
-        return {
-          dominant: "height",
-          canvas: [pref2h, pref2h],
-          readout: [w, pref3h - 1]
-        };
-      }
-    };
-
-    this._init.apply(this, arguments);
-  }
-
-
-  /* main exported class */
   function StarMap() {
 
     var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
@@ -344,9 +21,14 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
 
     /* "public" methods */
 
-    this._init = function(viewport, root_el) {
-      this.viewport = viewport;
-      this.elements = find_required_elements(root_el);
+    this._init = function _init(opts) {
+      if (typeof opts != "object")
+        throw new Error("opts must be of type object");
+
+      opts.rootElement = opts.rootElement || opts.viewPortElement;
+
+      this.viewport = new ui.ViewPort(opts.viewPortElement);
+      this.elements = find_required_elements($(opts.rootElement));
 
       /* The StarMap object manipuates the [middle] canvas element directly,
        * while letting other objects manage the other elements, so
@@ -355,12 +37,12 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
       this.canvas = this.elements.canvas;
       this.star_ctx = this.canvas.getContext("2d");
 
-      this.grid = new StarMapGrid(this.elements.underlay);
+      this.grid = new ui.Grid(this.elements.underlay);
 
-      this.overlay = new StarMapOverlay(this.elements.overlay,
+      this.overlay = new ui.Overlay(this.elements.overlay,
           this.canvas_hit_test.bind(this));
     
-      this.prepare_game_data(game_data);
+      this.prepare_game_data(opts.data);
 
       this.on_resize(); /* Once now, and... */
       $(window).off("resize").resize(this.on_resize.bind(this));
@@ -378,7 +60,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
         this.last_hit = star_index;
         var star = this.describe_star(star_index);
 
-        /* XXX get readout manager. Pump data to div where star info is displayed to user. */
+        /* XXX get readout manager. Pump data to div where star info is
+         * displayed to user. */
         var d = star.display;
         $(this.elements.readout).html("<div class='star_name'>" + d.name +
             "</div><div><span style='font-weight: bold; color: " +
@@ -427,7 +110,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
     };
 
     this.set_map_scale = function() {
-      this.scale = new StarMapScale(this.canvas.width, this.canvas.height);
+      this.scale = new scale.Scale(this.canvas.width, this.canvas.height);
     };
 
     /* The values we care about from this.canvas.getBoundingClientRect()
@@ -444,7 +127,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
     };
 
     this.prepare_game_data = function(game_data) {
-        this.stars = new StarData(game_data.stars);
+        this.stars = new datamgr.StarData(game_data.stars);
         this.size_lookup = game_data.sizes;
         this.color_lookup = game_data.colors;
         this.prefix_lookup = game_data.prefixes;
@@ -483,7 +166,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
       return [x, y];
     };
 
-    this.map_coordinates = function(event_x, event_y) {
+    this.map_coordinates = function map_coordinates(event_x, event_y) {
       var canvas_x = event_x - this.canvas_left;
       var canvas_y = event_y - this.canvas_top;
 
@@ -491,7 +174,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
         (this.canvas.height - canvas_y) / this.scale.yfactor];
     };
 
-    this.describe_star = function(index) {
+    this.describe_star = function describe_star(index) {
       var data = this.stars.get(index);
 
       return {
@@ -553,6 +236,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/gamedata/condens
     this._init.apply(this, arguments);
   }
 
-  // exports
-  return {StarMap: StarMap, StarMapViewPort: StarMapViewPort};
+  /* exports */
+  return {
+    StarMap: StarMap
+  };
 });

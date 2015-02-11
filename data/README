@@ -3,7 +3,7 @@ code of The Ur-Quan Masters (thank you, contributors to that excellent
 project!).
 
 These files have whitespace in them to make any necessary editing or
-tweaking easier.  They are not used directory by the application!  You
-must run the $PROJECT_ROOT/scripts/make-data.js script (requires NodeJS)
-to build a condensed data module suitable for the app to load using
-RequireJS.
+tweaking easier.  They are not used directly by the application!  You
+must run the $PROJECT_ROOT/scripts/make-data.js script (it requires
+NodeJS) to build a condensed data module suitable for the app to load
+using RequireJS.

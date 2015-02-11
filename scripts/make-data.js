@@ -2,7 +2,7 @@
 
 var fs = require("fs");
 
-var OUT_DIR = "www/lib/starmap/gamedata";
+var OUT_DIR = "www/lib/gamedata";
 var OUT_NAME = "condensed.js"
 var IN_DIR = "data";
 
