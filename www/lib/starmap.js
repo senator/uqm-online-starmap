@@ -171,7 +171,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       var canvas_y = event_y - this.canvas_top;
 
       return [canvas_x / this.scale.xfactor,
-        (this.canvas.height - canvas_y) / this.scale.yfactor];
+        constants.NOMINAL_HEIGHT - (canvas_y / this.scale.yfactor)];
     };
 
     this.describe_star = function describe_star(index) {
