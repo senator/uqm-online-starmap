@@ -1,15 +1,17 @@
 define(["starmap/constants"], function(constants) {
  
-  function Grid() {
-    var GRID_X_STEP = constants.NOMINAL_WIDTH / 20;
-    var GRID_Y_STEP = constants.NOMINAL_HEIGHT / 20;
-    var GRID_STROKE_STYLE = "#003399";
+  var GRID_X_STEP = constants.NOMINAL_WIDTH / 20;
+  var GRID_Y_STEP = constants.NOMINAL_HEIGHT / 20;
+  var GRID_STROKE_STYLE = "#003399";
 
-    this._init = function _init(underlay) {
+  function Grid() { this._init.apply(this, arguments); }
+  Grid.prototype = {
+
+    _init: function _init(underlay) {
       this.underlay = underlay;
-    };
+    },
 
-    this.draw_grid = function draw_grid(scale) {
+    draw_grid: function draw_grid(scale) {
       if (!scale)
         throw new Error("This method requires an instance of " +
             "starmap.scale.Scale as an argument");
@@ -33,29 +35,30 @@ define(["starmap/constants"], function(constants) {
         this.grid_ctx.closePath();
         this.grid_ctx.stroke();
       }
-    };
+    },
 
-    this.blank = function blank() {
+    blank: function blank() {
       this.underlay.getContext("2d").clearRect(
           0, 0, this.underlay.width, this.underlay.height);
-    };
+    }
+  };
 
-    this._init.apply(this, arguments);
-  }
 
-  function Overlay() {
-    var OVERLAY_STROKE_STYLE = "#ff00ff";
+  var OVERLAY_STROKE_STYLE = "#ff00ff";
 
-    this._init = function(overlay, hit_test) {
+  function Overlay() { this._init.apply(this, arguments); }
+  Overlay.prototype = {
+
+    _init: function(overlay, hit_test) {
       this.overlay = overlay;
       this.hit_test = hit_test;
 
       this.reset();
 
       this.overlay.addEventListener("mousemove", this.on_mousemove.bind(this));
-    };
+    },
 
-    this.on_mousemove = function on_mousemove(evt) {
+    on_mousemove: function on_mousemove(evt) {
       /* this.hit_test() should return
        *  null for clear,
        *  -1 for no change, or
@@ -72,9 +75,9 @@ define(["starmap/constants"], function(constants) {
       } else {
         this.blank();
       }
-    };
+    },
 
-    this.highlight = function highlight(canvas_x, canvas_y) {
+    highlight: function highlight(canvas_x, canvas_y) {
       var radius = ((this.overlay.width + this.overlay.height) / 2) / 40;
 
       this.overlay_ctx.beginPath();
@@ -91,34 +94,34 @@ define(["starmap/constants"], function(constants) {
       this.overlay_ctx.arc(canvas_x, canvas_y, radius, 0,
           constants.CIRCLE_RADIAN);
       this.overlay_ctx.stroke();
-    };
+    },
 
-    this.blank = function blank() {
+    blank: function blank() {
       this.overlay_ctx.clearRect(0, 0, this.overlay.width, this.overlay.height);
-    };
+    },
 
-    this.reset = function reset() {
+    reset: function reset() {
       this.overlay_ctx = overlay.getContext("2d");
       this.overlay_ctx.strokeStyle = OVERLAY_STROKE_STYLE;
       this.blank();
-    };
+    }
+  };
 
-    this._init.apply(this, arguments);
-  }
 
-  function ViewPort() {
-    /* These constants should agree with the CSS, and are expressed as ratio
-     * where the denomiator is screen width or height, according to the
-     * variable name. */
-    var LANDSCAPE_MENU = 0.08;
-    var LANDSCAPE_MIN_READOUT = 0.2;
-    var LANDSCAPE_MIN_CANVAS = 1 - LANDSCAPE_MIN_READOUT - LANDSCAPE_MENU;
+  /* These constants should agree with the CSS, and are expressed as ratio
+   * where the denomiator is screen width or height, according to the
+   * variable name. */
+  var LANDSCAPE_MENU = 0.08;
+  var LANDSCAPE_MIN_READOUT = 0.2;
+  var LANDSCAPE_MIN_CANVAS = 1 - LANDSCAPE_MIN_READOUT - LANDSCAPE_MENU;
 
-    this._init = function _init(ref_dom_obj) {
+  function ViewPort() { this._init.apply(this, arguments); }
+  ViewPort.prototype = {
+    _init: function _init(ref_dom_obj) {
       this.ref_dom_obj = ref_dom_obj;
-    };
+    },
 
-    this.calculate = function calculate(ref_dom_obj) {
+    calculate: function calculate(ref_dom_obj) {
       if (!ref_dom_obj)
         ref_dom_obj = this.ref_dom_obj;
 
@@ -157,10 +160,9 @@ define(["starmap/constants"], function(constants) {
           readout: [w, pref3h - 1]
         };
       }
-    };
+    }
+  };
 
-    this._init.apply(this, arguments);
-  }
 
   function ReadOut() { this._init.apply(this, arguments); }
   ReadOut.prototype = {
@@ -182,6 +184,8 @@ define(["starmap/constants"], function(constants) {
     }
   };
 
+
+  /* exports */
   return {
     Grid: Grid,
     Overlay: Overlay,
