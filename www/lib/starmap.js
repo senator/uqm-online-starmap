@@ -2,33 +2,30 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
   "starmap/datamgr", "starmap/scale"],
   function($, constants, util, ui, datamgr, scale) {
 
-  function StarMap() {
+  function StarMap() { this._init.apply(this, arguments); }
+  StarMap.prototype = {
 
-    var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
-    var OTHER_ELEMENT_NAMES = ["menu", "readout"];
+    CANVAS_NAMES: ["underlay", "canvas", "overlay"],
+    OTHER_ELEMENT_NAMES: ["menu", "readout"],
 
-    /* "private" (and "static") methods */
-
-    function find_required_elements(root) {
+    _find_required_elements: function _find_required_elements(root) {
       var elements = {};
 
-      CANVAS_NAMES.concat(OTHER_ELEMENT_NAMES).forEach(
+      this.CANVAS_NAMES.concat(this.OTHER_ELEMENT_NAMES).forEach(
         function(id) { elements[id] = root.find("#" + id).get(0); }
       );
 
       return elements;
-    }
+    },
 
-    /* "public" methods */
-
-    this._init = function _init(opts) {
+    _init: function _init(opts) {
       if (typeof opts != "object")
         throw new Error("opts must be of type object");
 
       opts.rootElement = opts.rootElement || opts.viewPortElement;
 
       this.viewport = new ui.ViewPort(opts.viewPortElement);
-      this.elements = find_required_elements($(opts.rootElement));
+      this.elements = this._find_required_elements($(opts.rootElement));
 
       /* The StarMap object manipuates the [middle] canvas element directly,
        * while letting other objects manage the other elements, so
@@ -48,9 +45,9 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       this.on_resize(); /* Once now, and... */
       $(window).off("resize").resize(this.on_resize.bind(this));
-    };
+    },
 
-    this.canvas_hit_test = function canvas_hit_test(event_x, event_y) {
+    canvas_hit_test: function canvas_hit_test(event_x, event_y) {
       var coords = this.map_coordinates(event_x, event_y);
       var star_index = this.find_nearest_star(coords[0], coords[1],
           100 /* XXX Don't hardcode. Scale with size of
@@ -60,35 +57,35 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
           return -1;
 
         this.last_hit = star_index;
-        var star = this.describe_star(star_index);
 
+        var star = this.describe_star(star_index);
         this.readout.display(star.display);
 
         /* Return canvas coordinates of star so the overlay object can
          * draw a crosshair. */
         return util.star_coords_to_canvas(star.x, star.y, this.scale);
-      } else {
 
+      } else {
         this.last_hit = null;
         this.readout.clear();
 
         return null;
       }
-    };
+    },
 
-    this.on_resize = function on_resize() {
+    on_resize: function on_resize() {
       this.size_elements_to_viewport(this.viewport.calculate());
       this.set_canvas_position();
       this.set_map_scale();
       this.grid.draw_grid(this.scale);
       this.draw_all();
       this.overlay.reset();
-    };
+    },
 
-    this.size_elements_to_viewport = function(dims) {
+    size_elements_to_viewport: function size_elements_to_viewport(dims) {
       var self = this;
 
-      CANVAS_NAMES.forEach(function(name) {
+      this.CANVAS_NAMES.forEach(function(name) {
         self.elements[name].width = dims.canvas[0];
         self.elements[name].height = dims.canvas[1];
       });
@@ -102,11 +99,11 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       $(this.elements.readout).width(dims.readout[0]);
       $(this.elements.readout).height(dims.readout[1]);
-    };
+    },
 
-    this.set_map_scale = function() {
+    set_map_scale: function set_map_scale() {
       this.scale = new scale.Scale(this.canvas.width, this.canvas.height);
-    };
+    },
 
     /* The values we care about from this.canvas.getBoundingClientRect()
      * should only change on window resize, and we can run this method on
@@ -114,22 +111,22 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
      * so it (hopefully) constitutes an optimization that we save the
      * needed values here instead of calling .getBoundingClientRect()
      * all the time.  */
-    this.set_canvas_position = function() {
+    set_canvas_position: function set_canvas_position() {
       var rect = this.canvas.getBoundingClientRect();
 
       this.canvas_left = rect.left;
       this.canvas_top = rect.top;
-    };
+    },
 
-    this.prepare_game_data = function(game_data) {
-        this.stars = new datamgr.StarData(game_data.stars);
-        this.size_lookup = game_data.sizes;
-        this.color_lookup = game_data.colors;
-        this.prefix_lookup = game_data.prefixes;
-        this.name_lookup = game_data.names;
-    };
+    prepare_game_data: function prepare_game_data(game_data) {
+      this.stars = new datamgr.StarData(game_data.stars);
+      this.size_lookup = game_data.sizes;
+      this.color_lookup = game_data.colors;
+      this.prefix_lookup = game_data.prefixes;
+      this.name_lookup = game_data.names;
+    },
 
-    this.draw_all = function() {
+    draw_all: function draw_all() {
       var len = this.stars.length();
 
       for (var i = 0; i < len; i++) {
@@ -143,11 +140,11 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
         this.star_ctx.fillStyle = params.color_rgb;
         this.star_ctx.fill();
       }
-    };
+    },
 
     /* map coords must be within 0..constants.NOMINAL_WIDTH,
      * 0..constants.NOMINAL_HEIGHT */
-    this.clamp_map_coords = function(x, y) {
+    clamp_map_coords: function clamp_map_coords(x, y) {
       if (x < 0)
         x = 0;
       else if (x >= constants.NOMINAL_WIDTH)
@@ -159,17 +156,17 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
         y = constants.NOMINAL_HEIGHT - 1;
 
       return [x, y];
-    };
+    },
 
-    this.map_coordinates = function map_coordinates(event_x, event_y) {
+    map_coordinates: function map_coordinates(event_x, event_y) {
       var canvas_x = event_x - this.canvas_left;
       var canvas_y = event_y - this.canvas_top;
 
       return [canvas_x / this.scale.xfactor,
         constants.NOMINAL_HEIGHT - (canvas_y / this.scale.yfactor)];
-    };
+    },
 
-    this.describe_star = function describe_star(index) {
+    describe_star: function describe_star(index) {
       var data = this.stars.get(index);
 
       return {
@@ -191,14 +188,14 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
           bullet: String.fromCharCode(this.size_lookup[data[2]].bullet)
         }
       };
-    };
+    },
 
     /* Find the nearest start to *map* coordinates x and y (not canvas or
      * screen coordinates) and return its index.  If threshold is defined,
      * only return an answer that's at least that close in map units to
      * (x, y), and if there is none, return null.
      */
-    this.find_nearest_star = function(x, y, threshold) {
+    find_nearest_star: function(x, y, threshold) {
       var clamped = this.clamp_map_coords(x, y);
 
       var index_and_distance = this.stars.find_nearest(clamped[0], clamped[1]);
@@ -217,20 +214,19 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
           return null;
         }
       }
-    };
+    },
 
-    this.blank = function blank() {
+    blank: function blank() {
       this.star_ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    };
+    },
 
-    this.blank_all = function blank_all() {
+    blank_all: function blank_all() {
       this.grid.blank();
       this.blank();
       this.overlay.blank();
-    };
+    }
 
-    this._init.apply(this, arguments);
-  }
+  };
 
   /* exports */
   return {
