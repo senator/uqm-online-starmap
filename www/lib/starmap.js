@@ -42,6 +42,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       this.overlay = new ui.Overlay(this.elements.overlay,
           this.canvas_hit_test.bind(this));
     
+      this.readout = new ui.ReadOut(this.elements.readout);
+
       this.prepare_game_data(opts.data);
 
       this.on_resize(); /* Once now, and... */
@@ -60,14 +62,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
         this.last_hit = star_index;
         var star = this.describe_star(star_index);
 
-        /* XXX get readout manager. Pump data to div where star info is
-         * displayed to user. */
-        var d = star.display;
-        $(this.elements.readout).html("<div class='star_name'>" + d.name +
-            "</div><div><span style='font-weight: bold; color: " +
-            star.color_rgb + "'>" +
-            d.bullet + " " + d.type + "</span> at " +
-            d.x + " x " + d.y + "</div>");
+        this.readout.display(star.display);
 
         /* Return canvas coordinates of star so the overlay object can
          * draw a crosshair. */
@@ -75,7 +70,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       } else {
 
         this.last_hit = null;
-        $(this.elements.readout).empty(); // XXX readout manager
+        this.readout.clear();
 
         return null;
       }
@@ -188,13 +183,14 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
         display: {
           x: data[0] / 10,
           y: data[1] / 10,
+          color_rgb: this.color_lookup[data[3]].rgb,
           name: (data[5] ? (this.prefix_lookup[data[5]] + " ") : "") +
             this.name_lookup[data[6]],
           type: this.color_lookup[data[3]].name + " " +
             this.size_lookup[data[2]].name,
           bullet: String.fromCharCode(this.size_lookup[data[2]].bullet)
         }
-      }
+      };
     };
 
     /* Find the nearest start to *map* coordinates x and y (not canvas or

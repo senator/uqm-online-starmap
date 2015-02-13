@@ -162,10 +162,31 @@ define(["starmap/constants"], function(constants) {
     this._init.apply(this, arguments);
   }
 
+  function ReadOut() { this._init.apply(this, arguments); }
+  ReadOut.prototype = {
+    _init: function _init(/* DOM element */ div) {
+      this.div = $(div);
+      this.clear();
+    },
+
+    clear: function clear() {
+      this.div.text("Hover over a star.");
+    },
+
+    display: function display(disp) {
+      this.div.html("<div class='star_name'>" + disp.name +
+            "</div><div><span style='font-weight: bold; color: " +
+            disp.color_rgb + "'>" +
+            disp.bullet + " " + disp.type + "</span> at " +
+            disp.x + " x " + disp.y + "</div>");
+    }
+  };
+
   return {
     Grid: Grid,
     Overlay: Overlay,
-    ViewPort: ViewPort
+    ViewPort: ViewPort,
+    ReadOut: ReadOut
   };
 
 });

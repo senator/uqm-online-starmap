@@ -1,7 +1,7 @@
 TODO (feature-wise and deeper)
 ==============================
 
-- Implement zooming, probably by extending StarMapScale object
+- [IN PROGRESS] Implement zooming, probably by extending StarMapScale object
 
 - [DONE] Fix color data, any other data derived from enums that
 was out of order.
@@ -17,6 +17,8 @@ was out of order.
 - HTML clean up
 
 - Star search
+
+- Draw lines for constellations
 
 - Build just enough of the game source (to do with planet generation) to get
 the mineral and bio counts per star system out of the game and into some data
