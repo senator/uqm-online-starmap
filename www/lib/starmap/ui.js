@@ -11,27 +11,33 @@ define(["starmap/constants"], function(constants) {
       this.underlay = underlay;
     },
 
-    draw_grid: function draw_grid(scale) {
-      if (!scale)
-        throw new Error("This method requires an instance of " +
-            "starmap.scale.Scale as an argument");
+    draw_grid: function draw_grid(scale, offset) {
+      if (!scale || !offset) {
+        throw new Error("This method requires a " +
+            "starmap.transform.Scale object and a " +
+            "starmap.transform.Offset object");
+      }
 
       this.grid_ctx = this.underlay.getContext("2d");
       this.grid_ctx.strokeStyle = GRID_STROKE_STYLE;
 
-      for (var x = GRID_X_STEP; x < constants.NOMINAL_WIDTH; x += GRID_X_STEP) {
+      for (var x = offset.left || GRID_X_STEP;
+          x < constants.NOMINAL_WIDTH;
+          x += GRID_X_STEP) {
         var startx = Math.round(x * scale.xfactor);
         this.grid_ctx.beginPath();
         this.grid_ctx.moveTo(startx, 0);
-        this.grid_ctx.lineTo(startx, constants.NOMINAL_HEIGHT);
+        this.grid_ctx.lineTo(startx, this.underlay.height);
         this.grid_ctx.stroke();
       }
 
-      for (var y = GRID_Y_STEP; y < constants.NOMINAL_HEIGHT; y += GRID_Y_STEP) {
+      for (var y = offset.bottom || GRID_Y_STEP;
+          y < constants.NOMINAL_HEIGHT;
+          y += GRID_Y_STEP) {
         var starty = Math.round(y * scale.yfactor);
         this.grid_ctx.beginPath();
         this.grid_ctx.moveTo(0, starty);
-        this.grid_ctx.lineTo(constants.NOMINAL_WIDTH, starty);
+        this.grid_ctx.lineTo(this.underlay.width, starty);
         this.grid_ctx.closePath();
         this.grid_ctx.stroke();
       }

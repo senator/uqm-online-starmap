@@ -94,16 +94,18 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
       this.bucket_index = new BucketIndex(this.list);
     },
 
-    drawing_parameters: function drawing_parameters(index,scale,size_lookup,color_lookup) {
+    /* XXX TODO since this method relies so heavily on properties of
+     * the StarMap object, maybe that's where it ought to be moved? */
+    drawing_parameters: function drawing_parameters(index,scale,offset,size_lookup,color_lookup) {
       var row = this.list[index];
       var color_row = color_lookup[row[3]];
-      var point = util.star_coords_to_canvas(row[0], row[1], scale);
+      var point = util.star_coords_to_canvas(row[0], row[1], scale, offset);
 
       return {
         color_rgb: color_row.rgb,
         x: point[0],
         y: point[1],
-        radius: size_lookup[row[2]].factor * scale.star_size_factor + 1
+        radius: size_lookup[row[2]].factor * scale.base_star_size_factor + 1
       };
     },
 

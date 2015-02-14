@@ -1,6 +1,6 @@
 define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
-  "starmap/datamgr", "starmap/scale"],
-  function($, constants, util, ui, datamgr, scale) {
+  "starmap/datamgr", "starmap/transform"],
+  function($, constants, util, ui, datamgr, transform) {
 
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
   var OTHER_ELEMENT_NAMES = ["menu", "readout"];
@@ -45,7 +45,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       this.prepare_game_data(opts.data);
 
-      this.scale = new scale.Scale();
+      this.scale = new transform.Scale();
+      this.offset = new transform.Offset();
 
       this.on_resize(); /* Once now, and... */
       $(window).off("resize").resize(this.on_resize.bind(this)); /* on resize */
@@ -67,7 +68,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
         /* Return canvas coordinates of star so the overlay object can
          * draw a crosshair. */
-        return util.star_coords_to_canvas(star.x, star.y, this.scale);
+        return util.star_coords_to_canvas(star.x, star.y,
+            this.scale, this.offset);
 
       } else {
         this.last_hit = null;
@@ -81,7 +83,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       this.size_elements_to_viewport(this.viewport.calculate());
       this.set_canvas_position();
       this.scale.update(this.canvas);
-      this.grid.draw_grid(this.scale);
+      this.grid.draw_grid(this.scale, this.offset);
       this.draw_all();
       this.overlay.reset();
     },
@@ -130,7 +132,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       var len = this.stars.length();
 
       for (var i = 0; i < len; i++) {
-        var params = this.stars.drawing_parameters(i, this.scale,
+        var params = this.stars.drawing_parameters(i, this.scale, this.offset,
             this.size_lookup, this.color_lookup);
 
         this.star_ctx.beginPath();
@@ -162,8 +164,9 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       var canvas_x = event_x - this.canvas_left;
       var canvas_y = event_y - this.canvas_top;
 
-      return [canvas_x / this.scale.xfactor,
-        constants.NOMINAL_HEIGHT - (canvas_y / this.scale.yfactor)];
+      return [canvas_x / this.scale.xfactor + this.offset.left,
+        (constants.NOMINAL_HEIGHT / this.scale.zoom_level) -
+          (canvas_y / this.scale.yfactor) + this.offset.bottom];
     },
 
     describe_star: function describe_star(index) {

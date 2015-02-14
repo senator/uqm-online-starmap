@@ -34,13 +34,37 @@ define(["starmap/constants"], function(constants) {
 
       this.xfactor = this.base_xfactor * zl;
       this.yfactor = this.base_yfactor * zl;
-      this.star_size_factor = this.base_star_size_factor * zl;
+
+      /* [Formerly]
+       * this.star_size_factor = this.base_star_size_factor * zl;
+       *
+       * XXX It is not necessarily desirable to have the size of star dots
+       * scale up as the user zooms in.  Perhaps the in-game starmap avoids
+       * it for a reason.  Even all the way zoomed in, Vela would always be
+       * occluded by Zeeman if the dots scale up in size.  So let's not. */
+      this.star_size_factor = this.base_star_size_factor;
     }
   };
+
+
+  /* Units are map units (on the 10k scale).  XXX TODO figure out
+   * what methods are more helpful here for the object's users than
+   * just direct access to {left, bottom}.
+   */
+  function Offset() { this._init.apply(this, arguments); }
+  Offset.prototype = {
+    left: 0,
+    bottom: 0,
+
+    _init: function _init() {
+    }
+  };
+
 
   /* exports */
   return {
     Scale: Scale,
+    Offset: Offset,
     ZOOM_LEVELS: ZOOM_LEVELS
   };
 
