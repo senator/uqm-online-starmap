@@ -21,7 +21,8 @@ define(["starmap/constants"], function(constants) {
       this.grid_ctx = this.underlay.getContext("2d");
       this.grid_ctx.strokeStyle = GRID_STROKE_STYLE;
 
-      for (var x = offset.left || GRID_X_STEP;
+      /* vertical lines, left to right */
+      for (var x = (offset.left % GRID_X_STEP) || GRID_X_STEP;
           x < constants.NOMINAL_WIDTH;
           x += GRID_X_STEP) {
         var startx = Math.round(x * scale.xfactor);
@@ -31,7 +32,8 @@ define(["starmap/constants"], function(constants) {
         this.grid_ctx.stroke();
       }
 
-      for (var y = offset.bottom || GRID_Y_STEP;
+      /* horizontal lines, top to bottom */
+      for (var y = (offset.bottom % GRID_Y_STEP) || GRID_Y_STEP;
           y < constants.NOMINAL_HEIGHT;
           y += GRID_Y_STEP) {
         var starty = Math.round(y * scale.yfactor);
