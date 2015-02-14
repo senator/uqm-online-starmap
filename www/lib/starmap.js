@@ -2,21 +2,23 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
   "starmap/datamgr", "starmap/scale"],
   function($, constants, util, ui, datamgr, scale) {
 
+  var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
+  var OTHER_ELEMENT_NAMES = ["menu", "readout"];
+  var HIT_THRESHOLD_MAP_UNITS = 100;
+
+  function _find_required_elements(root) {
+    var elements = {};
+
+    CANVAS_NAMES.concat(OTHER_ELEMENT_NAMES).forEach(
+      function(id) { elements[id] = root.find("#" + id).get(0); }
+    );
+
+    return elements;
+  }
+
+
   function StarMap() { this._init.apply(this, arguments); }
   StarMap.prototype = {
-
-    CANVAS_NAMES: ["underlay", "canvas", "overlay"],
-    OTHER_ELEMENT_NAMES: ["menu", "readout"],
-
-    _find_required_elements: function _find_required_elements(root) {
-      var elements = {};
-
-      this.CANVAS_NAMES.concat(this.OTHER_ELEMENT_NAMES).forEach(
-        function(id) { elements[id] = root.find("#" + id).get(0); }
-      );
-
-      return elements;
-    },
 
     _init: function _init(opts) {
       if (typeof opts != "object")
@@ -25,7 +27,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       opts.rootElement = opts.rootElement || opts.viewPortElement;
 
       this.viewport = new ui.ViewPort(opts.viewPortElement);
-      this.elements = this._find_required_elements($(opts.rootElement));
+      this.elements = _find_required_elements($(opts.rootElement));
 
       /* The StarMap object manipuates the [middle] canvas element directly,
        * while letting other objects manage the other elements, so
@@ -43,15 +45,17 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       this.prepare_game_data(opts.data);
 
+      this.scale = new scale.Scale();
+
       this.on_resize(); /* Once now, and... */
-      $(window).off("resize").resize(this.on_resize.bind(this));
+      $(window).off("resize").resize(this.on_resize.bind(this)); /* on resize */
     },
 
     canvas_hit_test: function canvas_hit_test(event_x, event_y) {
       var coords = this.map_coordinates(event_x, event_y);
       var star_index = this.find_nearest_star(coords[0], coords[1],
-          100 /* XXX Don't hardcode. Scale with size of
-                 canvas and zoom level. */);
+          HIT_THRESHOLD_MAP_UNITS / this.scale.zoom_level);
+
       if (star_index != null) { // Important: can be zero
         if (star_index == this.last_hit)
           return -1;
@@ -76,7 +80,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
     on_resize: function on_resize() {
       this.size_elements_to_viewport(this.viewport.calculate());
       this.set_canvas_position();
-      this.set_map_scale();
+      this.scale.update(this.canvas);
       this.grid.draw_grid(this.scale);
       this.draw_all();
       this.overlay.reset();
@@ -85,7 +89,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
     size_elements_to_viewport: function size_elements_to_viewport(dims) {
       var self = this;
 
-      this.CANVAS_NAMES.forEach(function(name) {
+      CANVAS_NAMES.forEach(function(name) {
         self.elements[name].width = dims.canvas[0];
         self.elements[name].height = dims.canvas[1];
       });
@@ -99,10 +103,6 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       $(this.elements.readout).width(dims.readout[0]);
       $(this.elements.readout).height(dims.readout[1]);
-    },
-
-    set_map_scale: function set_map_scale() {
-      this.scale = new scale.Scale(this.canvas.width, this.canvas.height);
     },
 
     /* The values we care about from this.canvas.getBoundingClientRect()

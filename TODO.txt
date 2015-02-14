@@ -10,7 +10,7 @@ was out of order.
 
 - Fill out menu bar with some (SVG?) icons or other controls
 
-- Readout manager in the JS
+- [IN PROGRESS] Readout manager in the JS
 
 - Menu manager in the JS
 
