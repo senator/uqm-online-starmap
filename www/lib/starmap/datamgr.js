@@ -105,7 +105,7 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
         color_rgb: color_row.rgb,
         x: point[0],
         y: point[1],
-        radius: size_lookup[row[2]].factor * scale.base_star_size_factor + 1
+        radius: size_lookup[row[2]].factor * scale.star_size_factor + 1
       };
     },
 

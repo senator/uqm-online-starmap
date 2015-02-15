@@ -40,7 +40,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
       this.overlay = new ui.Overlay(this.elements.overlay,
           this.canvas_hit_test.bind(this));
-    
+
       this.readout = new ui.ReadOut(this.elements.readout);
 
       this.prepare_game_data(opts.data);
@@ -83,8 +83,16 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       this.size_elements_to_viewport(this.viewport.calculate());
       this.set_canvas_position();
       this.scale.update(this.canvas);
-      this.grid.draw_grid(this.scale, this.offset);
+
       this.draw_all();
+    },
+
+    draw_all: function draw_all(skip_blank_all) {
+      if (!skip_blank_all)
+        this.blank_all();
+
+      this.grid.draw_grid(this.scale, this.offset);
+      this.draw_stars();
       this.overlay.reset();
     },
 
@@ -128,7 +136,7 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       this.name_lookup = game_data.names;
     },
 
-    draw_all: function draw_all() {
+    draw_stars: function draw_stars() {
       var len = this.stars.length();
 
       for (var i = 0; i < len; i++) {
@@ -227,8 +235,46 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
       this.grid.blank();
       this.blank();
       this.overlay.blank();
-    }
+    },
 
+    /* XXX Think more about this API (move_x, move_y, zoom).  Not only
+     * is it (obviously) only suited to simple stepwise panning and zooming,
+     * but it doesn't give us anything to know whether move movement in any
+     * direction will be possible. */
+    move_y: function move_y(direction) {
+      var viewable_height = constants.NOMINAL_HEIGHT / this.scale.zoom_level;
+      var step = viewable_height * direction;
+
+      if (this.offset.bottom + step <=
+            constants.NOMINAL_HEIGHT - viewable_height &&
+          this.offset.bottom + step >= 0)
+        this.offset.bottom += step;
+
+      this.draw_all();
+    },
+
+    move_x: function move_x(direction) {
+      var viewable_width = constants.NOMINAL_WIDTH / this.scale.zoom_level;
+      var step = viewable_width * direction;
+
+      if (this.offset.left + step <= constants.NOMINAL_WIDTH - viewable_width &&
+          this.offset.left + step >= 0)
+        this.offset.left += step;
+
+      this.draw_all();
+    },
+
+    zoom: function zoom(level) {
+      if (!level)
+        return this.scale.zoom();
+
+      try {
+        this.scale.zoom(level);
+        this.draw_all();
+      } catch (e) {
+        console.warn(e);
+      }
+    }
   };
 
   /* exports */

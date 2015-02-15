@@ -25,6 +25,9 @@ define(["starmap/constants"], function(constants) {
     },
 
     zoom: function zoom(level) {
+      if (!level)
+        return this.zoom_level;
+
       if (ZOOM_LEVELS.indexOf(level) == -1)
         throw new Error("Zoom level " + level + " not supported");
 
