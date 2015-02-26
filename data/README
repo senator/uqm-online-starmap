@@ -1,6 +1,11 @@
-The JSON files in this directory contain data coaxed out of the source
-code of The Ur-Quan Masters (thank you, contributors to that excellent
-project!).
+The JSON files in this directory contain data coaxed out of two sources:
+
+    1) The source code of The Ur-Quan Masters (thank you, contributors
+        to that excellent project!).
+    2) A MySQL database dump from the UQM StarMap Viewer, a similar project
+        to this one which I discovered part way through my development.
+        Thank you <pez@apocalyptech.com>!  The files with names matching the
+        glob pattern <world*.json> are derived from said database.
 
 These files have whitespace in them to make any necessary editing or
 tweaking easier.  They are not used directly by the application!  You

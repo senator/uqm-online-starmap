@@ -7,6 +7,7 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
   var X_DIVISOR = constants.NOMINAL_WIDTH / X_BUCKETS;
   var Y_DIVISOR = constants.NOMINAL_HEIGHT / Y_BUCKETS;
 
+
   /* This method trusts that x and y are within the map bounds. */
   function keys_from_coords(x, y) {
     return [Math.floor(x / X_DIVISOR), Math.floor(y / Y_DIVISOR)];
@@ -140,9 +141,52 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
     }
   };
 
+
+  /* Constants for the WorldData class */
+  var MOON_INDEX = 15;
+
+  function WorldData() { this._init.apply(this, arguments); }
+  WorldData.prototype = {
+    _init: function(worlds, world_types, world_names, romans) {
+      this.world_lookup = worlds;
+      this.world_type_lookup = world_types;
+      this.world_name_lookup = world_names;
+      this.roman_lookup = romans;
+    },
+
+    get_world_name: function(name_key, type_key, world_key, moon_key) {
+      if (type_key == 38 || type_key == 42) { /* StarBases and Sa-Matra */
+        return this.world_type_lookup[type_key];
+      } else if (name_key) {
+        return this.world_name_lookup[name_key];
+      } else {
+        var world_name = "Planet " + this.roman_lookup[world_key];
+        if (typeof moon_key != "undefined")
+          world_name += String.fromCharCode(97 + moon_key);
+
+        return world_name;
+      }
+    },
+
+    describe: function(star_key, world_key, moon_key) {
+      var world = this.world_lookup[star_key][world_key];
+
+      if (typeof moon_key != "undefined")
+        world = world[MOON_INDEX][moon_key];
+
+      return {
+        name: this.get_world_name(world[0], world[1], world_key, moon_key),
+        type: this.world_type_lookup[world[1]],
+        raw: world
+      };
+    }
+  };
+
+
   /* exports */
   return {
-    StarData: StarData
+    StarData: StarData,
+    WorldData: WorldData
   };
 
 });

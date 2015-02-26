@@ -130,6 +130,9 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
 
     prepare_game_data: function prepare_game_data(game_data) {
       this.stars = new datamgr.StarData(game_data.stars);
+      this.worlds = new datamgr.WorldData(game_data.worlds,
+          game_data.world_types, game_data.world_names, game_data.romans);
+
       this.size_lookup = game_data.sizes;
       this.color_lookup = game_data.colors;
       this.prefix_lookup = game_data.prefixes;
