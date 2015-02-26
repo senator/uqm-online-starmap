@@ -188,7 +188,8 @@ define(["starmap/constants"], function(constants) {
             "</div><div><span style='font-weight: bold; color: " +
             disp.color_rgb + "'>" +
             disp.bullet + " " + disp.type + "</span> at " +
-            disp.x + " x " + disp.y + "</div>");
+            disp.x + " x " + disp.y + "</div><div>Catalog #" + disp.index +
+            "</div>");
     }
   };
 

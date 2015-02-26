@@ -147,38 +147,63 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
 
   function WorldData() { this._init.apply(this, arguments); }
   WorldData.prototype = {
-    _init: function(worlds, world_types, world_names, romans) {
+    _init: function _init(worlds, world_types, world_names, romans) {
       this.world_lookup = worlds;
       this.world_type_lookup = world_types;
       this.world_name_lookup = world_names;
       this.roman_lookup = romans;
     },
 
-    get_world_name: function(name_key, type_key, world_key, moon_key) {
-      if (type_key == 38 || type_key == 42) { /* StarBases and Sa-Matra */
-        return this.world_type_lookup[type_key];
-      } else if (name_key) {
-        return this.world_name_lookup[name_key];
+    get_world_name: function get_world_name(nkey, tkey, wkey, mkey) {
+      if (tkey == 38 || tkey == 42) { /* StarBases and Sa-Matra */
+        return this.world_type_lookup[tkey];
+      } else if (nkey) {
+        return this.world_name_lookup[nkey];
       } else {
-        var world_name = "Planet " + this.roman_lookup[world_key];
-        if (typeof moon_key != "undefined")
-          world_name += String.fromCharCode(97 + moon_key);
+        var world_name = "Planet " + this.roman_lookup[wkey];
+        if (typeof mkey != "undefined")
+          world_name += String.fromCharCode(97 + mkey);
 
         return world_name;
       }
     },
 
-    describe: function(star_key, world_key, moon_key) {
+    describe: function describe(star_key, world_key, moon_key) {
       var world = this.world_lookup[star_key][world_key];
 
       if (typeof moon_key != "undefined")
         world = world[MOON_INDEX][moon_key];
 
-      return {
+      var result = {
         name: this.get_world_name(world[0], world[1], world_key, moon_key),
         type: this.world_type_lookup[world[1]],
-        raw: world
+        tectonics: world[2],
+        weather: world[3],
+        temp: world[4],
+        gravity: world[5],
+        bio_danger: world[6],
+        mineral_counts: world.slice(7, 15)
       };
+
+      if (world[MOON_INDEX]) {
+        var i = 0;
+        result.moons = world[MOON_INDEX].map(
+          (function() {
+            return this.describe(star_key, world_key, i++);
+          }).bind(this)
+        );
+      }
+
+      return result;
+    },
+
+    describe_for_star: function describe_for_star(star_key) {
+      var i = 0;
+      return this.world_lookup[star_key].map(
+        (function() {
+          return this.describe(star_key, i++);
+        }).bind(this)
+      );
     }
   };
 

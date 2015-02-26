@@ -199,7 +199,8 @@ define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
             this.name_lookup[data[6]],
           type: this.color_lookup[data[3]].name + " " +
             this.size_lookup[data[2]].name,
-          bullet: String.fromCharCode(this.size_lookup[data[2]].bullet)
+          bullet: String.fromCharCode(this.size_lookup[data[2]].bullet),
+          index: index
         }
       };
     },

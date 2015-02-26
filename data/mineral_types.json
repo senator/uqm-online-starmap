@@ -1,0 +1,10 @@
+[
+  [1, "Common"],
+  [2, "Corrosive"],
+  [3, "Base Metal"],
+  [4, "Noble Gas"],
+  [5, "Rare Earth"],
+  [6, "Precious"],
+  [8, "Radioactive"],
+  [25, "Exotic"]
+]

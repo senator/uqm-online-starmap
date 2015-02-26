@@ -20,10 +20,7 @@ was out of order.
 
 - Draw lines for constellations
 
-- Build just enough of the game source (to do with planet generation) to get
-the mineral and bio counts per star system out of the game and into some data
-file.  For bonus, translate the generation code into JS so that we can
-potentially draw star systems on demand.
+- [IN PROGRESS] Display planet info popup with mineral data
 
 - Consider features that allow game players to keep track of systems they've
 already visited (manually or via saved game upload?)

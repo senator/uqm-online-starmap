@@ -1,11 +1,12 @@
-Ur-Quan Masters Starmap
-=======================
+Ur-Quan Masters Mobile Starmap
+==============================
 
 This is a mobile and web app that displays the starmap from "The
-Ur-Quan Masters", the modern port of the classic game "Star Control II".
+Ur-Quan Masters" (hereafter UQM), the modern port of the classic
+game "Star Control II".
 
-The data in this application comes from the source code from the modern
-port, and both the contributors to that excellent project and the
+The data in this application comes from the source code from UQM and from
+the UQM Starmap Viewer, and both the contributors to those projects and the
 legendary creators of the original game have my thanks.
 
 Features
@@ -31,7 +32,7 @@ Build dependencies
 
 If you're going to build this app yourself, you need to put copies of
 jquery and requirejs into the www/thirdparty directory, or change the
-source to get them from CDNs if appropriate.
+app source code to load them from CDNs if desired.
 
 Author
 ------
