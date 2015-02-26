@@ -1,6 +1,9 @@
-define(["jquery", "starmap/constants", "starmap/util", "starmap/ui",
-  "starmap/datamgr", "starmap/transform"],
-  function($, constants, util, ui, datamgr, transform) {
+define(["jquery", "knockout", "starmap/constants", "starmap/util",
+  "starmap/ui", "starmap/datamgr", "starmap/transform"],
+  function($, ko, constants, util, ui, datamgr, transform) {
+
+  window.ko = ko; // XXX temporary
+  window.$ = $; // XXX temporary
 
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
   var OTHER_ELEMENT_NAMES = ["menu", "readout"];

@@ -23,3 +23,13 @@ canvas#overlay { z-index: 3; }
 
 #readout { text-align: center; }
 .star_name { font-size: 150%; }
+
+#popup {
+    position: fixed;
+    display: hidden;
+    z-index: 0;
+    left: 4%;
+    top: 4%;
+    height: 92%;
+    width: 92%;
+}

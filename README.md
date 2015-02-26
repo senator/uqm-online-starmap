@@ -31,8 +31,8 @@ Build dependencies
 ------------------
 
 If you're going to build this app yourself, you need to put copies of
-jquery and requirejs into the www/thirdparty directory, or change the
-app source code to load them from CDNs if desired.
+jquery, requirejs, and knockout into the www/thirdparty directory, or
+change the app source code to load them from CDNs as desired.
 
 Author
 ------
