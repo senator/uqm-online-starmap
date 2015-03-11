@@ -22,8 +22,8 @@ canvas#canvas { z-index: 2; }
 canvas#overlay { z-index: 3; }
 
 #readout { text-align: center; }
-.star_name { font-size: 150%; }
-
+.star-name { font-size: 150%; }
+.star-type { font-weight: bold; }
 #popup {
     position: fixed;
     display: hidden;
@@ -32,4 +32,11 @@ canvas#overlay { z-index: 3; }
     top: 4%;
     height: 92%;
     width: 92%;
+}
+
+#menu div { text-align: center; }
+.hamburger {
+    font-size: 8vw;
+    text-decoration: none;
+    color: white;
 }

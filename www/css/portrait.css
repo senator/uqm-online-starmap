@@ -1,4 +1,16 @@
-nav#menu { height: 8vh; }
+#menu { height: 8vh; }
+#menu div {
+    float: left;
+    width: 8vh;
+    text-align: center;
+    border-right: 1px solid #ccc;
+}
+#menu div:last-child {
+    border-right: none;
+}
+.hamburger {
+    font-size: 5vh;
+}
 div#starmap_layers {
     position: relative;
     height: 1px;

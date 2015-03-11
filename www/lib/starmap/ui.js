@@ -1,4 +1,4 @@
-define(["starmap/constants"], function(constants) {
+define(["knockout", "starmap/constants"], function(ko, constants) {
  
   var GRID_X_STEP = constants.NOMINAL_WIDTH / 20;
   var GRID_Y_STEP = constants.NOMINAL_HEIGHT / 20;
@@ -175,21 +175,33 @@ define(["starmap/constants"], function(constants) {
   function ReadOut() { this._init.apply(this, arguments); }
   ReadOut.prototype = {
     _init: function _init(/* DOM element */ div) {
-      this.div = $(div);
-      this.clear();
+      this.view_model = {
+        clear: ko.observable(true),
+        star_name: ko.observable(),
+        star_color_rgb: ko.observable(),
+        star_bullet: ko.observable(),
+        star_type: ko.observable(),
+        star_x: ko.observable(),
+        star_y: ko.observable(),
+        star_index: ko.observable()
+      };
+
+      ko.applyBindings(this.view_model, div);
     },
 
     clear: function clear() {
-      this.div.text("Hover over a star.");
+      this.view_model.clear(true);
     },
 
     display: function display(disp) {
-      this.div.html("<div class='star_name'>" + disp.name +
-            "</div><div><span style='font-weight: bold; color: " +
-            disp.color_rgb + "'>" +
-            disp.bullet + " " + disp.type + "</span> at " +
-            disp.x + " x " + disp.y + "</div><div>Catalog #" + disp.index +
-            "</div>");
+      this.view_model.clear(false);
+      this.view_model.star_name(disp.name);
+      this.view_model.star_color_rgb(disp.color_rgb);
+      this.view_model.star_bullet(disp.bullet);
+      this.view_model.star_type(disp.type);
+      this.view_model.star_x(disp.x);
+      this.view_model.star_y(disp.y);
+      this.view_model.star_index(disp.index);
     }
   };
 

@@ -23,14 +23,38 @@
         </script>
     </head>
     <body>
-        <nav id="menu">menu</nav>
+        <nav id="menu">
+            <div>
+                <a href="#" class="hamburger">&#8801;</a><!-- XXX TODO
+                replace with PNG hamburger; only way to get clickable
+                area the right size -->
+            </div>
+            <div>next</div>
+        </nav>
+
         <div id="starmap_layers">
             <canvas id="underlay"></canvas>
             <canvas id="canvas"></canvas>
             <canvas id="overlay">Your browser needs HTML5 support.</canvas>
         </div>
         <div id="readout">
-            <!-- XXX TODO template for readout here -->
+            <div class="hover-msg" data-bind="visible: clear()">
+                Hover over a star.
+            </div>
+            <div data-bind="visible: !clear()">
+                <div class="star-name" data-bind="text: star_name"></div>
+                <div class="star-info">
+                    <span class="star-type"
+                        data-bind="style: { color: star_color_rgb }">
+                        <span data-bind="text: star_bullet"></span>
+                        <span data-bind="text: star_type"></span>
+                    </span>
+                    at
+                    <span data-bind="text: star_x"></span> x
+                    <span data-bind="text: star_y"></span>
+                </div>
+                <div>Catalog #<span data-bind="text: star_index"></span></div>
+            </div>
         </div>
         <div id="popup">
             <div id="system">

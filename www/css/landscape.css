@@ -1,8 +1,10 @@
-nav#menu {
+#menu {
     float: left;
     width: 8vw;
 }
-
+#menu div {
+    height: 8vw; /* sic */
+}
 div#starmap_layers {
     float: left;
     position: relative;
