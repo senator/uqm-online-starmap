@@ -56,12 +56,12 @@
                 <div>Catalog #<span data-bind="text: star_index"></span></div>
             </div>
         </div>
-        <div id="popup">
-            <div id="system">
-                <!-- XXX TODO template for display of system of worlds
-                    info here -->
+        <div id="popup"
+            data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
+            <div id="system" data-bind="visible: show_system">
+                <h1 data-bind="text: star_name"></h1>
             </div>
-            <div id="world">
+            <div id="world" data-bind="visible: show_world">
                 <!-- XXX TODO template for display of one world info here -->
             </div>
         </div>

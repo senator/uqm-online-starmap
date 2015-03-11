@@ -6,7 +6,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
   window.$ = $; // XXX temporary
 
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
-  var OTHER_ELEMENT_NAMES = ["menu", "readout"];
+  var OTHER_ELEMENT_NAMES = ["menu", "readout", "popup"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
 
   function _find_required_elements(root) {
@@ -45,6 +45,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
           this.canvas_hit_test.bind(this));
 
       this.readout = new ui.ReadOut(this.elements.readout);
+      this.popup = new ui.Popup(this.elements.popup);
 
       this.prepare_game_data(opts.data);
 

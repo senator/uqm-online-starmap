@@ -172,20 +172,21 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
+  function ReadOutViewModel() {
+    this.clear = ko.observable(true);
+    this.star_name = ko.observable();
+    this.star_color_rgb = ko.observable();
+    this.star_bullet = ko.observable();
+    this.star_type = ko.observable();
+    this.star_x = ko.observable();
+    this.star_y = ko.observable();
+    this.star_index = ko.observable();
+  }
+
   function ReadOut() { this._init.apply(this, arguments); }
   ReadOut.prototype = {
     _init: function _init(/* DOM element */ div) {
-      this.view_model = {
-        clear: ko.observable(true),
-        star_name: ko.observable(),
-        star_color_rgb: ko.observable(),
-        star_bullet: ko.observable(),
-        star_type: ko.observable(),
-        star_x: ko.observable(),
-        star_y: ko.observable(),
-        star_index: ko.observable()
-      };
-
+      this.view_model = new ReadOutViewModel();
       ko.applyBindings(this.view_model, div);
     },
 
@@ -206,13 +207,31 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
+  function PopupViewModel() {
+    this.show_system = ko.observable(false);
+    this.show_world = ko.observable(false);
+    this.pop = ko.computed(
+      function() { return this.show_system() || this.show_world(); }, this
+    );
+    this.star_name = ko.observable("Hector!"); // XXX
+  }
+
+  function Popup() { this._init.apply(this, arguments); }
+  Popup.prototype = {
+    _init: function(popup) {
+      this.view_model = new PopupViewModel();
+      ko.applyBindings(this.view_model, popup);
+    }
+  };
+
+
   /* exports */
   return {
     Grid: Grid,
     Overlay: Overlay,
     ViewPort: ViewPort,
-    ReadOut: ReadOut
+    ReadOut: ReadOut,
+    Popup: Popup
   };
 
 });
-

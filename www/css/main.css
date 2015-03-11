@@ -24,14 +24,29 @@ canvas#overlay { z-index: 3; }
 #readout { text-align: center; }
 .star-name { font-size: 150%; }
 .star-type { font-weight: bold; }
+/* XXX TODO add some outer container to hide templately stuff before knockout runs */
 #popup {
     position: fixed;
-    display: hidden;
     z-index: 0;
     left: 4%;
     top: 4%;
     height: 92%;
     width: 92%;
+    background-color: white;
+}
+#system {
+    position: relative;
+    left: 2%;
+    top: 2%;
+    height: 96%;
+    width: 96%;
+    background-color: #333;
+    color: white;
+}
+#system h1 {
+    font-family: "Lucida Console", Monaco, monospace; /* XXX TODO use this widely */
+    text-align: center;
+    margin: 0;
 }
 
 #menu div { text-align: center; }
