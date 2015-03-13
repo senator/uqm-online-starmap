@@ -147,11 +147,13 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
 
   function WorldData() { this._init.apply(this, arguments); }
   WorldData.prototype = {
-    _init: function _init(worlds, world_types, world_names, romans) {
+    _init: function _init(worlds, world_types, world_names, romans,
+               mineral_types) {
       this.world_lookup = worlds;
       this.world_type_lookup = world_types;
       this.world_name_lookup = world_names;
       this.roman_lookup = romans;
+      this.mineral_type_lookup = mineral_types;
     },
 
     get_world_name: function get_world_name(nkey, tkey, wkey, mkey) {
@@ -182,7 +184,15 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
         temp: world[4],
         gravity: world[5],
         bio_danger: world[6],
-        mineral_counts: world.slice(7, 15)
+        minerals: world.slice(7, 15).map(
+          (function(mineral, idx) {
+            return {
+              name: this.mineral_type_lookup[idx][1],
+              valuePer: this.mineral_type_lookup[idx][0],
+              count: mineral
+            };
+          }).bind(this)
+        )
       };
 
       if (world[MOON_INDEX]) {

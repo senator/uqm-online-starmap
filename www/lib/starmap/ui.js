@@ -57,13 +57,17 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   function Overlay() { this._init.apply(this, arguments); }
   Overlay.prototype = {
 
-    _init: function(overlay, hit_test) {
+    _init: function(overlay, hit_test, on_click) {
       this.overlay = overlay;
       this.hit_test = hit_test;
 
       this.reset();
 
       this.overlay.addEventListener("mousemove", this.on_mousemove.bind(this));
+      
+      /* XXX FIXME depends on mousemove to aim us first (disregards click
+       * position) and therefore is probably useless on mobile */
+      this.overlay.addEventListener("click", on_click);
     },
 
     on_mousemove: function on_mousemove(evt) {
@@ -207,13 +211,24 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
+  function world_model_mapper(w) {
+    return {
+      name: w.name,
+      type: w.type,
+      mineral_wealth: w.minerals.reduce(
+        function(a,b) { return a + (b.valuePer * b.count); }, 0),
+      moons: w.moons ? w.moons.map(world_model_mapper) : []
+    };
+  }
+
   function PopupViewModel() {
     this.show_system = ko.observable(false);
     this.show_world = ko.observable(false);
     this.pop = ko.computed(
       function() { return this.show_system() || this.show_world(); }, this
     );
-    this.star_name = ko.observable("Hector!"); // XXX
+    this.star_name = ko.observable();
+    this.worlds = ko.observableArray();
   }
 
   function Popup() { this._init.apply(this, arguments); }
@@ -221,6 +236,12 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     _init: function(popup) {
       this.view_model = new PopupViewModel();
       ko.applyBindings(this.view_model, popup);
+    },
+    
+    display_system: function(system, worlds) {
+      this.view_model.star_name = system.display.name;
+      this.view_model.worlds(worlds.map(world_model_mapper));
+      this.view_model.show_system(true);
     }
   };
 

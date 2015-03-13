@@ -60,6 +60,35 @@
             data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
             <div id="system" data-bind="visible: show_system">
                 <h1 data-bind="text: star_name"></h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>World</th>
+                            <th>Type</th>
+                            <th>Mineral Wealth</th>
+                            <th>XXX TODO</th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach: worlds">
+                        <tr>
+                            <td class="world"><a href="#"
+                                    data-bind="text: name"></a></td>
+                            <td data-bind="text: type"></td>
+                            <td data-bind="text: mineral_wealth"></td>
+                            <td>...</td>
+                        </tr>
+                        <!-- ko foreach: moons -->
+                        <tr>
+                            <td class="world moon">
+                                <a href="#" data-bind="text: name"></a>
+                            </td>
+                            <td data-bind="text: type"></td>
+                            <td data-bind="text: mineral_wealth"></td>
+                            <td>...</td>
+                        </tr>
+                        <!-- /ko -->
+                    </tbody>
+                </table>
             </div>
             <div id="world" data-bind="visible: show_world">
                 <!-- XXX TODO template for display of one world info here -->

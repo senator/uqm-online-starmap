@@ -2,9 +2,6 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
   "starmap/ui", "starmap/datamgr", "starmap/transform"],
   function($, ko, constants, util, ui, datamgr, transform) {
 
-  window.ko = ko; // XXX temporary
-  window.$ = $; // XXX temporary
-
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
   var OTHER_ELEMENT_NAMES = ["menu", "readout", "popup"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
@@ -42,7 +39,8 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
       this.grid = new ui.Grid(this.elements.underlay);
 
       this.overlay = new ui.Overlay(this.elements.overlay,
-          this.canvas_hit_test.bind(this));
+          this.canvas_hit_test.bind(this),
+          this.canvas_mouse_click.bind(this));
 
       this.readout = new ui.ReadOut(this.elements.readout);
       this.popup = new ui.Popup(this.elements.popup);
@@ -54,6 +52,15 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
 
       this.on_resize(); /* Once now, and... */
       $(window).off("resize").resize(this.on_resize.bind(this)); /* on resize */
+    },
+
+    canvas_mouse_click: function canvas_mouse_click() {
+      if (this.last_hit != null) {
+        this.popup.display_system(
+          this.describe_star(this.last_hit),
+          this.worlds.describe_for_star(this.last_hit)
+        );
+      }
     },
 
     canvas_hit_test: function canvas_hit_test(event_x, event_y) {
@@ -135,7 +142,8 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
     prepare_game_data: function prepare_game_data(game_data) {
       this.stars = new datamgr.StarData(game_data.stars);
       this.worlds = new datamgr.WorldData(game_data.worlds,
-          game_data.world_types, game_data.world_names, game_data.romans);
+          game_data.world_types, game_data.world_names, game_data.romans,
+          game_data.mineral_types);
 
       this.size_lookup = game_data.sizes;
       this.color_lookup = game_data.colors;
