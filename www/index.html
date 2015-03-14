@@ -59,6 +59,9 @@
         <div id="popup"
             data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
             <div id="system" data-bind="visible: show_system">
+                <div class="closer">
+                    <a href="#" data-bind="click: show_system(false)">[X]</a>
+                </div>
                 <h1 data-bind="text: star_name"></h1>
                 <table>
                     <thead>
@@ -66,6 +69,7 @@
                             <th>World</th>
                             <th>Type</th>
                             <th>Mineral Wealth</th>
+                            <th>Bio Data</th>
                             <th>XXX TODO</th>
                         </tr>
                     </thead>
@@ -75,6 +79,7 @@
                                     data-bind="text: name"></a></td>
                             <td data-bind="text: type"></td>
                             <td data-bind="text: mineral_wealth"></td>
+                            <td data-bind="text: bio_data"></td>
                             <td>...</td>
                         </tr>
                         <!-- ko foreach: moons -->
@@ -84,6 +89,7 @@
                             </td>
                             <td data-bind="text: type"></td>
                             <td data-bind="text: mineral_wealth"></td>
+                            <td data-bind="text: bio_data"></td>
                             <td>...</td>
                         </tr>
                         <!-- /ko -->

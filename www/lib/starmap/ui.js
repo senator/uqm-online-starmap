@@ -217,6 +217,7 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
       type: w.type,
       mineral_wealth: w.minerals.reduce(
         function(a,b) { return a + (b.valuePer * b.count); }, 0),
+      bio_data: w.bio_data,
       moons: w.moons ? w.moons.map(world_model_mapper) : []
     };
   }
@@ -239,7 +240,7 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     },
     
     display_system: function(system, worlds) {
-      this.view_model.star_name = system.display.name;
+      this.view_model.star_name(system.display.name);
       this.view_model.worlds(worlds.map(world_model_mapper));
       this.view_model.show_system(true);
     }

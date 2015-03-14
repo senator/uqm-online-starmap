@@ -57,3 +57,5 @@ canvas#overlay { z-index: 3; }
 }
 .moon { text-indent: 1em; }
 .world a { color: white; }
+.closer { float: right; }
+.closer a { color: white; }
