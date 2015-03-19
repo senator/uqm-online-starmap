@@ -59,3 +59,11 @@ canvas#overlay { z-index: 3; }
 .world a { color: white; }
 .closer { float: right; }
 .closer a { color: white; }
+
+.system_table th {
+    background: #666;
+    padding: 0 2px;
+}
+.system_table td.figure { text-align: right; }
+.system_table meter { width: 2em; }
+meter.overmax { border: 2px solid #ff3; }

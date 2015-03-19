@@ -176,32 +176,42 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
       if (typeof moon_key != "undefined")
         world = world[MOON_INDEX][moon_key];
 
+      var minerals = world.slice(7, 15).map(
+        (function(mineral, idx) {
+          return {
+            name: this.mineral_type_lookup[idx][1],
+            valuePer: this.mineral_type_lookup[idx][0],
+            count: mineral
+          };
+        }).bind(this)
+      );
+
       var result = {
         name: this.get_world_name(world[0], world[1], world_key, moon_key),
         type: this.world_type_lookup[world[1]],
         tectonics: world[2],
         weather: world[3],
-        temp: world[4],
+        temperature: world[4],
         gravity: world[5],
+        bio_data: null, // XXX fix data
         bio_danger: world[6],
-        minerals: world.slice(7, 15).map(
-          (function(mineral, idx) {
-            return {
-              name: this.mineral_type_lookup[idx][1],
-              valuePer: this.mineral_type_lookup[idx][0],
-              count: mineral
-            };
-          }).bind(this)
-        )
+        minerals: minerals,
+        mineral_wealth: minerals.reduce(
+          function(a,b) { return a + (b.valuePer * b.count); }, 0)
       };
 
-      if (world[MOON_INDEX]) {
-        var i = 0;
-        result.moons = world[MOON_INDEX].map(
-          (function() {
-            return this.describe(star_key, world_key, i++);
-          }).bind(this)
-        );
+      /* Moons can't have their own moons in our universe. */
+      if (typeof moon_key == "undefined") {
+        if (world[MOON_INDEX]) {
+          var i = 0;
+          result.moons = world[MOON_INDEX].map(
+            (function() {
+              return this.describe(star_key, world_key, i++);
+            }).bind(this)
+          );
+        } else {
+          result.moons = [];
+        }
       }
 
       return result;

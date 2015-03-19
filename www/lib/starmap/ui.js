@@ -211,17 +211,6 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
-  function world_model_mapper(w) {
-    return {
-      name: w.name,
-      type: w.type,
-      mineral_wealth: w.minerals.reduce(
-        function(a,b) { return a + (b.valuePer * b.count); }, 0),
-      bio_data: w.bio_data,
-      moons: w.moons ? w.moons.map(world_model_mapper) : []
-    };
-  }
-
   function PopupViewModel() {
     this.show_system = ko.observable(false);
     this.show_world = ko.observable(false);
@@ -230,6 +219,10 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     );
     this.star_name = ko.observable();
     this.worlds = ko.observableArray();
+
+    /* This looks unnecessary (there's a data-binding that could
+     * seemingly just call show_system(false) directly), but it ain't. */
+    this.close_system = function() { this.show_system(false); };
   }
 
   function Popup() { this._init.apply(this, arguments); }
@@ -241,7 +234,7 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     
     display_system: function(system, worlds) {
       this.view_model.star_name(system.display.name);
-      this.view_model.worlds(worlds.map(world_model_mapper));
+      this.view_model.worlds(worlds);
       this.view_model.show_system(true);
     }
   };
