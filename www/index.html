@@ -62,64 +62,49 @@
                 <div class="closer">
                     <a href="#" data-bind="click: close_system">[X]</a>
                 </div>
-                <h1 data-bind="text: star_name"></h1>
+                <h1 data-bind="text: star_display_get('name')"></h1>
+                <!-- XXX TODO color, type, pos, etc -->
                 <table class="system_table">
                     <thead>
                         <tr>
                             <th>World</th>
                             <th>Type</th>
                             <th title="Mineral Wealth (in R.U.)">R.U.</th>
-                            <th title="Biological Data">BData</th>
-                            <th title="Biological Danger">BDang</th>
+                            <th title="Biological Data">Bio</th>
                             <th title="Temperature">Tmp</th>
                             <th title="Weather">Wea</th>
                             <th title="Tectonics">Tec</th>
                         </tr>
                     </thead>
-                    <tbody data-bind="foreach: worlds">
+                    <tbody data-bind="foreach: worldsWithInlineSatellites">
                         <tr>
-                            <td class="world"><a href="#"
+                            <td class="world"
+                                data-bind="css: { moon: is_moon }"><a href="#"
                                     data-bind="text: name"></a></td>
                             <td data-bind="text: type"></td>
-                            <td class="figure" data-bind="text: mineral_wealth"></td>
-                            <td class="figure" data-bind="text: bio_data"></td>
-                            <td class="figure" data-bind="text: bio_danger"></td>
-                            <td>
+                            <td class="figure"
+                                data-bind="text: mineral_wealth == null ? '--' : mineral_wealth"></td>
+                            <td class="figure"
+                                data-bind="text: bio_data == null ? '--' : bio_data"></td>
+                            <td class="range">
+                                <span data-bind="visible: temperature == null">
+                                    --</span>
                                 <meter min="-100" max="400" optimum="0" low="100" high="200"
-                                    data-bind="value: temperature, css: { overmax: temperature > 400 }, attr: { title: temperature }"></meter>
+                                    data-bind="value: temperature, visible: temperature != null, css: { overmax: temperature > 400 }, attr: { title: temperature }"></meter>
                             </td>
-                            <td>
+                            <td class="range">
+                                <span data-bind="visible: weather == null">
+                                    --</span>
                                 <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="value: weather, attr: { title: weather }"></meter>
+                                    data-bind="value: weather, visible: weather != null, attr: { title: weather }"></meter>
                             </td>
-                            <td>
+                            <td class="range">
+                                <span data-bind="visible: tectonics == null">
+                                    --</span>
                                 <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="value: tectonics, attr: { title: tectonics }"></meter>
+                                    data-bind="visible: tectonics != null, value: tectonics, attr: { title: tectonics }"></meter>
                             </td>
                         </tr>
-                        <!-- ko foreach: moons -->
-                        <tr>
-                            <td class="world moon">
-                                <a href="#" data-bind="text: name"></a>
-                            </td>
-                            <td data-bind="text: type"></td>
-                            <td class="figure" data-bind="text: mineral_wealth"></td>
-                            <td class="figure" data-bind="text: bio_data"></td>
-                            <td class="figure" data-bind="text: bio_danger"></td>
-                            <td>
-                                <meter min="-100" max="400" optimum="0" low="100" high="200"
-                                    data-bind="value: temperature, css: { overmax: temperature > 400 }, attr: { title: temperature }"></meter>
-                            </td>
-                            <td>
-                                <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="value: weather, attr: { title: weather }"></meter>
-                            </td>
-                            <td>
-                                <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="value: tectonics, attr: { title: tectonics }"></meter>
-                            </td>
-                        </tr>
-                        <!-- /ko -->
                     </tbody>
                 </table>
             </div>

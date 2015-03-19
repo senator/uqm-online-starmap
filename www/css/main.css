@@ -55,7 +55,7 @@ canvas#overlay { z-index: 3; }
     text-decoration: none;
     color: white;
 }
-.moon { text-indent: 1em; }
+.moon { text-indent: 1.5em; }
 .world a { color: white; }
 .closer { float: right; }
 .closer a { color: white; }
@@ -65,5 +65,6 @@ canvas#overlay { z-index: 3; }
     padding: 0 2px;
 }
 .system_table td.figure { text-align: right; }
+.system_table td.range { text-align: center; }
 .system_table meter { width: 2em; }
 meter.overmax { border: 2px solid #ff3; }

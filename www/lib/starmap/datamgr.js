@@ -156,9 +156,17 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
       this.mineral_type_lookup = mineral_types;
     },
 
+    nullify_field: function nullify_field(type_key, field_name) {
+      return this.world_type_lookup[type_key].indexOf(field_name) != -1;
+    },
+
+    get_world_type_name: function get_world_type_name(type_key) {
+      return this.world_type_lookup[type_key][0];
+    },
+
     get_world_name: function get_world_name(nkey, tkey, wkey, mkey) {
-      if (tkey == 38 || tkey == 42) { /* StarBases and Sa-Matra */
-        return this.world_type_lookup[tkey];
+      if (this.nullify_field(tkey, "name")) { /* StarBases and Sa-Matra */
+        return this.get_world_type_name(tkey);
       } else if (nkey) {
         return this.world_name_lookup[nkey];
       } else {
@@ -170,13 +178,8 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
       }
     },
 
-    describe: function describe(star_key, world_key, moon_key) {
-      var world = this.world_lookup[star_key][world_key];
-
-      if (typeof moon_key != "undefined")
-        world = world[MOON_INDEX][moon_key];
-
-      var minerals = world.slice(7, 15).map(
+    describe_world_minerals: function describe_world_minerals(world) {
+      return world.slice(7, 15).map(
         (function(mineral, idx) {
           return {
             name: this.mineral_type_lookup[idx][1],
@@ -185,19 +188,31 @@ define(["starmap/constants", "starmap/util"], function(constants, util) {
           };
         }).bind(this)
       );
+    },
+
+    describe: function describe(star_key, world_key, moon_key) {
+      var world = this.world_lookup[star_key][world_key];
+
+      if (typeof moon_key != "undefined")
+        world = world[MOON_INDEX][moon_key];
+
+      var minerals = this.describe_world_minerals(world);
+      var mineral_wealth = minerals.reduce(
+          function(a,b) { return a + (b.valuePer * b.count); }, 0)
+      var type_key = world[1];
 
       var result = {
-        name: this.get_world_name(world[0], world[1], world_key, moon_key),
-        type: this.world_type_lookup[world[1]],
-        tectonics: world[2],
-        weather: world[3],
-        temperature: world[4],
-        gravity: world[5],
-        bio_data: null, // XXX fix data
-        bio_danger: world[6],
+        name: this.get_world_name(world[0], type_key, world_key, moon_key),
+        type: this.get_world_type_name(type_key),
+        tectonics: (this.nullify_field(type_key,"tectonics")?null:world[2]),
+        weather: (this.nullify_field(type_key,"weather")?null:world[3]),
+        temperature: (this.nullify_field(type_key,"temperature")?null:world[4]),
+        gravity: (this.nullify_field(type_key,"gravity")?null:world[5]),
+        bio_data: (this.nullify_field(type_key,"bio_data")?null:world[6]),
         minerals: minerals,
-        mineral_wealth: minerals.reduce(
-          function(a,b) { return a + (b.valuePer * b.count); }, 0)
+        mineral_wealth: (this.nullify_field(type_key,"mineral_wealth") ?
+            null : mineral_wealth),
+        is_moon: (typeof(moon_key) != "undefined")
       };
 
       /* Moons can't have their own moons in our universe. */

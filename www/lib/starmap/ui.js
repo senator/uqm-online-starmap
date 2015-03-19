@@ -214,11 +214,30 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   function PopupViewModel() {
     this.show_system = ko.observable(false);
     this.show_world = ko.observable(false);
+
+    /* Use pop() to determin whether popup should be showing */
     this.pop = ko.computed(
       function() { return this.show_system() || this.show_world(); }, this
     );
-    this.star_name = ko.observable();
+
+    /* Data structures the user is directly interested in: */
+    this.star_display = ko.observable();
     this.worlds = ko.observableArray();
+
+    /* this.star_display() winds up like an observable object, and doesn't
+     * work without some indirect referencing. */
+    this.star_display_get = (
+      function(key) {
+        var disp = this.star_display();
+        return disp ? disp[key] : null;
+      }
+    ).bind(this);
+
+    /* Returns a flattened version of words() with moons inlined. */
+    this.worldsWithInlineSatellites = ko.computed(function() {
+      return this.worlds().reduce(
+        function(a, b) { a.push(b); return a.concat(b.moons); }, []);
+    }, this);
 
     /* This looks unnecessary (there's a data-binding that could
      * seemingly just call show_system(false) directly), but it ain't. */
@@ -233,7 +252,7 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     },
     
     display_system: function(system, worlds) {
-      this.view_model.star_name(system.display.name);
+      this.view_model.star_display(system.display);
       this.view_model.worlds(worlds);
       this.view_model.show_system(true);
     }
