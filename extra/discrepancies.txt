@@ -1,0 +1,48 @@
+Below are all the star systems whose mineral value totals as we calculate
+them from data from UQM* differ from the totals published in the Star
+Control II Role Playing Resource Guide.
+
+I do not have an environment in which I can run the original DOS version
+of the game anymore, so I can't be certain whether the totals in the
+guide are incorrect or whether the DOS version of the game was different
+than UQM in this regard.
+
+However, I have a strong memory of the dozens if not hundreds of times
+I mined the Sol system playing the game in the 1990s, and when I play
+UQM today I don't notice anything different there, which may mean that
+the total has always been UQM's 3,693 and not the guide's 4,008.
+
+Nevertheless, it may be signifcant that every one of these star
+systems with discrepancies contain alien homeworlds or other special
+alien presences.  If the discrepancies were all positive, I might think
+they represented minerals which you can only access if you allow the
+the Kohr-ah to destroy the inhabitants and lower any slave shields.
+But there are problems with that idea, not the least of which is that
+many of the discrepancies are negative.
+
+* UQM data derived indirectly via CJ Kucera's UQM Starmap Viewer.
+
+Index   Star                Guide - UQM
+=====   ================    ===========
+21      Gamma Serpentis     -3
+42      Gamma Krueger       -24
+82      Sol                  315
+98      Beta Luyten         -69
+114     Vela                 159
+118     Alpha Cerenkov      -109
+129     Epsilon Scorpii      324
+133     Procyon              3425
+136     Beta Brahe           1516
+150     Gamma Vulpeculae    -18
+154     Delta Vulpeculae    -312
+174     Zeta Persei          81
+220     Alpha Tauri          139
+228     Betelgeuse           39
+293     Alpha Tucanae        167
+316     Beta Orionis         1357
+421     Delta Draconis      -39
+441     Zeta Draconis        160
+442     Beta Aquarii         57
+467     Beta Librae          44
+474     Zeta Hyades          21
+497     Beta Corvi           108
