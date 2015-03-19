@@ -2,6 +2,7 @@ body {
     margin: 0;
     background-color: black;
     color: white;
+    font-family: "Lucida Console", Monaco, monospace;
 }
 
 /* Important: Do not add any padding/margin to the canvases or
@@ -21,7 +22,7 @@ canvas#underlay {
 canvas#canvas { z-index: 2; }
 canvas#overlay { z-index: 3; }
 
-#readout { text-align: center; }
+.star-info { text-align: center; }
 .star-name { font-size: 150%; }
 .star-type { font-weight: bold; }
 /* XXX TODO add some outer container to hide templately stuff before knockout runs */
@@ -44,7 +45,6 @@ canvas#overlay { z-index: 3; }
     color: white;
 }
 #system h1 {
-    font-family: "Lucida Console", Monaco, monospace; /* XXX TODO use this widely */
     text-align: center;
     margin: 0;
 }
@@ -60,9 +60,13 @@ canvas#overlay { z-index: 3; }
 .closer { float: right; }
 .closer a { color: white; }
 
+#system .star-info {
+    margin-top: 0.5em;
+    margin-bottom: 0.75em;
+}
 .system_table th {
     background: #666;
-    padding: 0 2px;
+    padding: 0 0.5em;
 }
 .system_table td.figure { text-align: right; }
 .system_table td.range { text-align: center; }

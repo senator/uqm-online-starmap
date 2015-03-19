@@ -63,7 +63,19 @@
                     <a href="#" data-bind="click: close_system">[X]</a>
                 </div>
                 <h1 data-bind="text: star_display_get('name')"></h1>
-                <!-- XXX TODO color, type, pos, etc -->
+                <div class="star-info">
+                    <span class="star-type"
+                        data-bind="style: { color: star_display_get('color_rgb') }">
+                        <span data-bind="text: star_display_get('bullet')"></span>
+                        <span data-bind="text: star_display_get('type')"></span>
+                    </span>
+                    at
+                    <strong data-bind="text: star_display_get('x')"></strong> x
+                    <strong data-bind="text: star_display_get('y')"></strong>
+                    <br />
+                    Catalog #<span
+                        data-bind="text: star_display_get('index')"></span>
+                </div>
                 <table class="system_table">
                     <thead>
                         <tr>
