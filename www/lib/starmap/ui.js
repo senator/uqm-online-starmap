@@ -242,6 +242,11 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     /* This looks unnecessary (there's a data-binding that could
      * seemingly just call show_system(false) directly), but it ain't. */
     this.close_system = function() { this.show_system(false); };
+
+    this.handle_esc = function(data, evt) {
+      if (evt.keyCode == 27)
+        this.close_system();  /* XXX TODO close whatever's open in popup */
+    };
   }
 
   function Popup() { this._init.apply(this, arguments); }

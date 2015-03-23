@@ -58,7 +58,8 @@
         </div>
         <div id="popup"
             data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
-            <div id="system" data-bind="visible: show_system">
+            <div id="system" tabindex="1"
+                data-bind="visible: show_system, hasfocus: show_system, event: {keydown: handle_esc}">
                 <div class="closer">
                     <a href="#" data-bind="click: close_system">[X]</a>
                 </div>
