@@ -25,9 +25,8 @@
     <body>
         <nav id="menu">
             <div>
-                <a href="#" class="hamburger">&#8801;</a><!-- XXX TODO
-                replace with PNG hamburger; only way to get clickable
-                area the right size -->
+                <!-- XXX TODO maybe replace with PNG hamburger?  -->
+                <a href="#" class="hamburger">&#8801;</a>
             </div>
             <div>next</div>
         </nav>
@@ -59,15 +58,18 @@
         <div id="popup"
             data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
             <div id="system" tabindex="1"
-                data-bind="visible: show_system, hasfocus: show_system, event: {keydown: handle_esc}">
+                data-bind="visible: show_system,
+                    hasfocus: show_system, event: {keydown: handle_esc}">
                 <div class="closer">
                     <a href="#" data-bind="click: close_system">[X]</a>
                 </div>
                 <h1 data-bind="text: star_display_get('name')"></h1>
                 <div class="star-info">
                     <span class="star-type"
-                        data-bind="style: { color: star_display_get('color_rgb') }">
-                        <span data-bind="text: star_display_get('bullet')"></span>
+                        data-bind="style: { color:
+                            star_display_get('color_rgb') }">
+                        <span data-bind="text: star_display_get('bullet')">
+                        </span>
                         <span data-bind="text: star_display_get('type')"></span>
                     </span>
                     at
@@ -96,26 +98,38 @@
                                     data-bind="text: name"></a></td>
                             <td data-bind="text: type"></td>
                             <td class="figure"
-                                data-bind="text: mineral_wealth == null ? '--' : mineral_wealth"></td>
+                                data-bind="text: mineral_wealth == null ?
+                                    '--' : mineral_wealth"></td>
                             <td class="figure"
-                                data-bind="text: bio_data == null ? '--' : bio_data"></td>
+                                data-bind="text: bio_data == null ?
+                                    '--' : bio_data"></td>
                             <td class="range">
                                 <span data-bind="visible: temperature == null">
                                     --</span>
-                                <meter min="-100" max="400" optimum="0" low="100" high="200"
-                                    data-bind="value: temperature, visible: temperature != null, css: { overmax: temperature > 400 }, attr: { title: temperature }"></meter>
+                                <meter min="-100" max="400"
+                                    optimum="0" low="100" high="200"
+                                    data-bind="value: temperature,
+                                        visible: temperature != null,
+                                        css: { overmax: temperature > 400 },
+                                        attr: { title: temperature }"></meter>
                             </td>
                             <td class="range">
                                 <span data-bind="visible: weather == null">
                                     --</span>
-                                <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="value: weather, visible: weather != null, attr: { title: weather }"></meter>
+                                <meter min="0" max="8"
+                                    optimum="0" low="2" high="5"
+                                    data-bind="value: weather,
+                                        visible: weather != null,
+                                        attr: { title: weather }"></meter>
                             </td>
                             <td class="range">
                                 <span data-bind="visible: tectonics == null">
                                     --</span>
-                                <meter min="0" max="8" optimum="0" low="2" high="5"
-                                    data-bind="visible: tectonics != null, value: tectonics, attr: { title: tectonics }"></meter>
+                                <meter min="0" max="8"
+                                    optimum="0" low="2" high="5"
+                                    data-bind="visible: tectonics != null,
+                                        value: tectonics,
+                                        attr: { title: tectonics }"></meter>
                             </td>
                         </tr>
                     </tbody>

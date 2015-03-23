@@ -27,6 +27,7 @@ canvas#overlay { z-index: 3; }
 .star-type { font-weight: bold; }
 /* XXX TODO add some outer container to hide templately stuff before knockout runs */
 #popup {
+    visibility: hidden;
     position: fixed;
     z-index: 0;
     left: 4%;

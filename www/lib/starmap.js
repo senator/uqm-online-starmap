@@ -52,6 +52,12 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
 
       this.on_resize(); /* Once now, and... */
       $(window).off("resize").resize(this.on_resize.bind(this)); /* on resize */
+
+      /* "Unhide" all major non-canvas elements, since Knockout
+       * is now controlling everything there that we care about. */
+      OTHER_ELEMENT_NAMES.forEach(
+        (function(e) { this.elements[e].style.visibility='initial' }).bind(this)
+      );
     },
 
     canvas_mouse_click: function canvas_mouse_click() {
