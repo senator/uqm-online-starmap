@@ -44,6 +44,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
 
       this.readout = new ui.ReadOut(this.elements.readout);
       this.popup = new ui.Popup(this.elements.popup);
+      this.menu = new ui.Menu(this.elements.menu, this);
 
       this.prepare_game_data(opts.data);
 

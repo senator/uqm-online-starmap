@@ -3,7 +3,10 @@
     width: 8vw;
 }
 #menu div {
-    height: 8vw; /* sic */
+    height: 14vh; /* sic */
+}
+#menu div a {
+    font-size: 10vh; /* sic */
 }
 div#starmap_layers {
     float: left;

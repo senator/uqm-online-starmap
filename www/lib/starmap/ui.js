@@ -264,13 +264,44 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
+  function Menu() { this._init.apply(this, arguments); }
+  Menu.prototype = {
+    _init: function(menu, star_map) {
+      ko.applyBindings({
+        settings: function() { alert("XXX TODO"); },
+        zoom_in: function() {
+          var current = star_map.zoom();
+          star_map.zoom(current * 2);
+        },
+        zoom_out: function() {
+          var current = star_map.zoom();
+          star_map.zoom(current / 2);
+        },
+        pan_left: function() {
+          star_map.move_x(-0.5);
+        },
+        pan_right: function() {
+          star_map.move_x(0.5);
+        },
+        pan_up: function() {
+          star_map.move_y(0.5);
+        },
+        pan_down: function() {
+          star_map.move_y(-0.5);
+        }
+      }, menu);
+    }
+  };
+
+
   /* exports */
   return {
     Grid: Grid,
     Overlay: Overlay,
     ViewPort: ViewPort,
     ReadOut: ReadOut,
-    Popup: Popup
+    Popup: Popup,
+    Menu: Menu
   };
 
 });

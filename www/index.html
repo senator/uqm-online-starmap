@@ -25,10 +25,26 @@
     <body>
         <nav id="menu">
             <div>
-                <!-- XXX TODO maybe replace with PNG hamburger?  -->
-                <a href="#" class="hamburger">&#8801;</a>
+                <a data-bind="click: settings" href="#">&#8801;</a>
             </div>
-            <div>next</div>
+            <div>
+                <a data-bind="click: zoom_in" href="#">+</a>
+            </div>
+            <div>
+                <a data-bind="click: zoom_out" href="#">-</a>
+            </div>
+            <div>
+                <a data-bind="click: pan_left" href="#">&larr;</a>
+            </div>
+            <div>
+                <a data-bind="click: pan_down" href="#">&darr;</a>
+            </div>
+            <div>
+                <a data-bind="click: pan_up" href="#">&uarr;</a>
+            </div>
+            <div>
+                <a data-bind="click: pan_right" href="#">&rarr;</a>
+            </div>
         </nav>
 
         <div id="starmap_layers">
