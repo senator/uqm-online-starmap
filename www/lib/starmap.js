@@ -3,7 +3,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
   function($, ko, constants, util, ui, datamgr, transform) {
 
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
-  var OTHER_ELEMENT_NAMES = ["menu", "readout", "popup"];
+  var OTHER_ELEMENT_NAMES = ["readout", "popup"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
 
   function _find_required_elements(root) {
@@ -42,9 +42,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
           this.canvas_hit_test.bind(this),
           this.canvas_mouse_click.bind(this));
 
-      this.readout = new ui.ReadOut(this.elements.readout);
-      this.popup = new ui.Popup(this.elements.popup);
-      this.menu = new ui.Menu(this.elements.menu, this);
+      this.start_ui();
 
       this.prepare_game_data(opts.data);
 
@@ -61,6 +59,17 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
       );
     },
 
+    start_ui: function start_ui() {
+      var view_model = {};
+
+      this.menu = new ui.Menu(this);
+      this.readout = new ui.ReadOut();
+      this.popup = new ui.Popup();
+
+      ["menu", "readout", "popup"].forEach(
+        (function(k) { view_model[k] = this[k].view_model; }).bind(this));
+      ko.applyBindings(view_model, document.body);
+    },
     canvas_mouse_click: function canvas_mouse_click() {
       if (this.last_hit != null) {
         this.popup.display_system(
@@ -124,10 +133,13 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
 
       /* Kludgey: We don't otherwise "know" about the canvases' parent
        * element. */
-      if (dims.dominant == "width")
+      if (dims.dominant == "width") {
         $(this.elements.canvas.parentElement).width(dims.canvas[0]);
-      else
+        $(this.elements.canvas.parentElement).height(dims.canvas[0]);
+      } else {
+        $(this.elements.canvas.parentElement).width(dims.canvas[1]);
         $(this.elements.canvas.parentElement).height(dims.canvas[1]);
+      }
 
       $(this.elements.readout).width(dims.readout[0]);
       $(this.elements.readout).height(dims.readout[1]);
@@ -260,10 +272,6 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
       this.overlay.blank();
     },
 
-    /* XXX Think more about this API (move_x, move_y, zoom).  Not only
-     * is it (obviously) only suited to simple stepwise panning and zooming,
-     * but it doesn't give us anything to know whether move movement in any
-     * direction will be possible. */
     move_y: function move_y(direction) {
       var viewable_height = constants.NOMINAL_HEIGHT / this.scale.zoom_level;
       var step = viewable_height * direction;
@@ -287,16 +295,39 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
       this.draw_all();
     },
 
+    snap: function snap() {
+      /* This method makes sure that our offset isn't inappropriate for
+       * the current zoom level (i.e., we don't put an edge of the known
+       * star map inside our viewable area. */
+
+      var viewable_width = constants.NOMINAL_WIDTH / this.scale.zoom_level;
+
+      if (this.offset.left % viewable_width != 0) {
+        this.offset.left =
+          Math.floor(this.offset.left / viewable_width) * viewable_width;
+      }
+
+      var viewable_height = constants.NOMINAL_HEIGHT / this.scale.zoom_level;
+
+      if (this.offset.bottom % viewable_height != 0) {
+        this.offset.bottom =
+          Math.floor(this.offset.bottom / viewable_height) * viewable_height;
+      }
+    },
+
     zoom: function zoom(level) {
       if (!level)
         return this.scale.zoom();
 
       try {
         this.scale.zoom(level);
-        this.draw_all();
       } catch (e) {
         console.warn(e);
+        return;
       }
+
+      this.snap();
+      this.draw_all();
     }
   };
 

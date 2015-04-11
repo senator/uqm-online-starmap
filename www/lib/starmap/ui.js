@@ -189,9 +189,8 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
 
   function ReadOut() { this._init.apply(this, arguments); }
   ReadOut.prototype = {
-    _init: function _init(/* DOM element */ div) {
+    _init: function _init() {
       this.view_model = new ReadOutViewModel();
-      ko.applyBindings(this.view_model, div);
     },
 
     clear: function clear() {
@@ -244,16 +243,19 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
     this.close_system = function() { this.show_system(false); };
 
     this.handle_esc = function(data, evt) {
-      if (evt.keyCode == 27)
+      if (evt.keyCode == 27) {
         this.close_system();  /* XXX TODO close whatever's open in popup */
+        return false;
+      }
+
+      return true;
     };
   }
 
   function Popup() { this._init.apply(this, arguments); }
   Popup.prototype = {
-    _init: function(popup) {
+    _init: function() {
       this.view_model = new PopupViewModel();
-      ko.applyBindings(this.view_model, popup);
     },
     
     display_system: function(system, worlds) {
@@ -264,32 +266,74 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
   };
 
 
+  function MenuViewModel(star_map) {
+    this.settings = function() { alert("XXX TODO"); },
+
+    this.zoom_in = function() {
+      var current = star_map.zoom();
+      star_map.zoom(current * 2);
+    };
+
+    this.zoom_out = function() {
+      var current = star_map.zoom();
+      star_map.zoom(current / 2);
+    };
+
+    this.pan_left = function() { star_map.move_x(-0.5); };
+    this.pan_right = function() { star_map.move_x(0.5); };
+    this.pan_up = function() { star_map.move_y(0.5); };
+    this.pan_down = function() { star_map.move_y(-0.5); };
+
+    this.controls = (function(data, evt) {
+      /* XXX This is for my PC 105 layout, or whatever we call common US
+       * keyboards these days.  i18n?
+       *
+       * Dedicated arrow keys, numeric keypad arrow keys, and old terminal/Vi
+       * home-row hjkl keys are all for panning. + and - for zoom.  */
+      switch (evt.keyCode) {
+        case 72:
+        case 37:
+        case 100:
+          this.pan_left();
+          break;
+        case 74:
+        case 40:
+        case 98:
+          this.pan_down();
+          break;
+        case 75:
+        case 38:
+        case 104:
+          this.pan_up();
+          break;
+        case 76:
+        case 39:
+        case 102:
+          this.pan_right();
+          break;
+        case 109:
+        case 189:
+          this.zoom_out();
+          break;
+        case 107:
+        case 187:
+          this.zoom_in();
+          break;
+        case 112:
+          this.settings();
+          break;
+        default:
+          return true;
+      }
+
+      return false;
+    }).bind(this);
+  }
+
   function Menu() { this._init.apply(this, arguments); }
   Menu.prototype = {
-    _init: function(menu, star_map) {
-      ko.applyBindings({
-        settings: function() { alert("XXX TODO"); },
-        zoom_in: function() {
-          var current = star_map.zoom();
-          star_map.zoom(current * 2);
-        },
-        zoom_out: function() {
-          var current = star_map.zoom();
-          star_map.zoom(current / 2);
-        },
-        pan_left: function() {
-          star_map.move_x(-0.5);
-        },
-        pan_right: function() {
-          star_map.move_x(0.5);
-        },
-        pan_up: function() {
-          star_map.move_y(0.5);
-        },
-        pan_down: function() {
-          star_map.move_y(-0.5);
-        }
-      }, menu);
+    _init: function(star_map) {
+      this.view_model = new MenuViewModel(star_map);
     }
   };
 

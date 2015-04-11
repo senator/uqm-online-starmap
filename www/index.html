@@ -22,8 +22,8 @@
             });
         </script>
     </head>
-    <body>
-        <nav id="menu">
+    <body tabindex="2" data-bind="event: { keydown: popup.pop() ? null : menu.controls }">
+        <nav id="menu" data-bind="with: menu">
             <div>
                 <a data-bind="click: settings" href="#">&#8801;</a>
             </div>
@@ -52,7 +52,7 @@
             <canvas id="canvas"></canvas>
             <canvas id="overlay">Your browser needs HTML5 support.</canvas>
         </div>
-        <div id="readout">
+        <div id="readout" data-bind="with: readout">
             <div class="hover-msg" data-bind="visible: clear()">
                 Hover over a star.
             </div>
@@ -72,7 +72,7 @@
             </div>
         </div>
         <div id="popup"
-            data-bind="visible: pop, style: { zIndex: (pop() ? 10 : 0) }">
+            data-bind="with: popup, visible: popup.pop(), style: { zIndex: (popup.pop() ? 10 : 0) }">
             <div id="system" tabindex="1"
                 data-bind="visible: show_system,
                     hasfocus: show_system, event: {keydown: handle_esc}">
