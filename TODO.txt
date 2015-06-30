@@ -1,18 +1,18 @@
 TODO (feature-wise and deeper)
 ==============================
 
-- [IN PROGRESS] Implement zooming, probably by extending StarMapScale object
+- [DONE] Implement zooming, probably by extending StarMapScale object
 
 - [DONE] Fix color data, any other data derived from enums that
 was out of order.
 
 - Build as Android app with Cordova.
 
-- Fill out menu bar with some (SVG?) icons or other controls
+- [DONE] Fill out menu bar with some (SVG?) icons or other controls
 
-- [IN PROGRESS] Readout manager in the JS
+- [DONE] Readout manager in the JS
 
-- Menu manager in the JS
+- [IN PROGRESS] Menu manager in the JS
 
 - HTML clean up
 

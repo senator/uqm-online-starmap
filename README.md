@@ -13,11 +13,11 @@ Features
 --------
 
     - Interact with the map to find out the name, position, size,
-    color, and [TODO] mineral and biological wealth of star systems.
+    color, and mineral and biological wealth of star systems.
     Just mouseover on platforms that have mice or similar pointing
     devices, or [TODO] tap on mobile)
 
-    - [TODO] Zoom and pan the map.
+    - Zoom and pan the map.
 
     - [TODO] Search for stars by name
 
