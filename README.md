@@ -1,13 +1,23 @@
-Ur-Quan Masters Mobile Starmap
+Ur-Quan Masters Online Starmap
 ==============================
 
-This is a mobile and web app that displays the starmap from "The
-Ur-Quan Masters" (hereafter UQM), the modern port of the classic
-game "Star Control II".
+This is a mobile (potentially) and web app that displays the starmap
+from "The Ur-Quan Masters" (hereafter UQM), the modern port of the
+classic game "Star Control II".
 
 The data in this application comes from the source code from UQM and from
 the UQM Starmap Viewer, and both the contributors to those projects and the
 legendary creators of the original game have my thanks.
+
+Licensing stuff
+---------------
+
+This application uses and requires copies of jQuery, RequireJS, and
+KnockoutJS, all of which I'm using under the terms of the MIT
+license.  There are also images and data incorporated in this
+application that are derived or taken from other works.  This
+application is licensed to you under the terms of the GPL
+version 2. See the file COPYING for more information about all of this.
 
 Features
 --------
