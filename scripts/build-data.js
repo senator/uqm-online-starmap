@@ -29,9 +29,12 @@ fs.readdirSync(IN_DIR).filter(
   }
 );
 
+var output_file = OUT_DIR + "/" + OUT_NAME;
 fs.writeFile(
-  OUT_DIR + "/" + OUT_NAME, 
+  output_file,
   "define([], function() {\n  return " +
     JSON.stringify(all_data) +
     ";\n});"
 );
+
+console.log("Game data built as: " + output_file);

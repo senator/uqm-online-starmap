@@ -1,3 +1,4 @@
 www/thirdparty/*.js
 www/lib/gamedata/*.js
 *.swp
+config.mk

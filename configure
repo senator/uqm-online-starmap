@@ -1,0 +1,30 @@
+#!/bin/bash
+
+echo "Lazy configuration starting ..."
+
+#####################################################################
+
+NODEJS=$(type -p node)
+if [ "$NODEJS" = "" ]; then
+    NODEJS=$(type -p nodejs)
+fi
+
+if [ "$NODEJS" = "" ]; then
+    echo "Didn't find nodejs.  Get it in your PATH and try again?"
+    exit 1
+fi
+
+#####################################################################
+
+WGET=$(type -p wget)
+if [ "$WGET" = "" ]; then
+    echo "Didn't find wget.  Get it in your PATH and try again?"
+    exit 1
+fi
+
+cat > config.mk <<EOF
+WGET=$WGET
+NODEJS=$NODEJS
+EOF
+
+echo "Lazy configuration complete."
