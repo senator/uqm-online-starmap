@@ -36,9 +36,20 @@ canvas#overlay { z-index: 3; }
     background-color: white;
 }
 
+#settings {
+    visibility: hidden;
+    position: fixed;
+    z-index: 0;
+    left: 4%;
+    top: 4%;
+    height: 92%;
+    width: 92%;
+    background-color: white;
+}
+
 #readout { text-align: center; }
 
-#system {
+.in-popup {
     position: relative;
     left: 2%;
     top: 2%;
@@ -48,9 +59,12 @@ canvas#overlay { z-index: 3; }
     color: white;
     overflow: auto;
 }
-#system h1 {
+.in-popup h1 {
     text-align: center;
     margin: 0;
+}
+.in-popup a {
+    color: white;
 }
 
 #menu div { text-align: center; }

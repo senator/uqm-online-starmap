@@ -1,9 +1,8 @@
-Ur-Quan Masters Online Starmap
-==============================
+Online Starmap for The Ur-Quan Masters
+======================================
 
-This is a mobile (potentially) and web app that displays the starmap
-from "The Ur-Quan Masters" (hereafter UQM), the modern port of the
-classic game "Star Control II".
+This is a  web app that displays the starmap from "The Ur-Quan Masters"
+(hereafter UQM), the modern port of the classic game "Star Control II".
 
 The data in this application comes from the source code from UQM and from
 the UQM Starmap Viewer, and both the contributors to those projects and the
@@ -25,7 +24,7 @@ Features
     - Interact with the map to find out the name, position, size,
     color, and mineral and biological wealth of star systems.
     Just mouseover on platforms that have mice or similar pointing
-    devices, or [TODO] tap on mobile)
+    devices.
 
     - Zoom and pan the map.
 

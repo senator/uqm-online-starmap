@@ -2,8 +2,9 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
   "starmap/ui", "starmap/datamgr", "starmap/transform"],
   function($, ko, constants, util, ui, datamgr, transform) {
 
+  var VERSION = "0.9.0";
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
-  var OTHER_ELEMENT_NAMES = ["readout", "popup"];
+  var OTHER_ELEMENT_NAMES = ["readout", "popup", "settings"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
 
   function _find_required_elements(root) {
@@ -60,7 +61,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
     },
 
     start_ui: function start_ui() {
-      var view_model = {};
+      var view_model = {version: VERSION};
 
       this.menu = new ui.Menu(this);
       this.readout = new ui.ReadOut();
@@ -70,6 +71,7 @@ define(["jquery", "knockout", "starmap/constants", "starmap/util",
         (function(k) { view_model[k] = this[k].view_model; }).bind(this));
       ko.applyBindings(view_model, document.body);
     },
+
     canvas_mouse_click: function canvas_mouse_click() {
       if (this.last_hit != null) {
         this.popup.display_system(

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Map</title>
+        <title>Online Starmap for UQM</title>
         <link rel="stylesheet" href="css/main.css">
         <link rel="stylesheet" media="screen and (orientation: portrait)"
             href="css/portrait.css">
@@ -73,7 +73,7 @@
         </div>
         <div id="popup"
             data-bind="with: popup, visible: popup.pop(), style: { zIndex: (popup.pop() ? 10 : 0) }">
-            <div id="system" tabindex="1"
+            <div id="system" class="in-popup" tabindex="1"
                 data-bind="visible: show_system,
                     hasfocus: show_system, event: {keydown: handle_esc}">
                 <div class="closer">
@@ -153,6 +153,35 @@
             </div>
             <div id="world" data-bind="visible: show_world">
                 <!-- XXX TODO template for display of one world info here -->
+            </div>
+        </div>
+        <div id="settings" data-bind="visible: menu.show_settings, style: { zIndex: (menu.show_settings() ? 20 : 0) }">
+            <div class="in-popup">
+                <div class="closer">
+                    <a href="#" data-bind="click: menu.close_settings()">[X]</a>
+                </div>
+                <h1>Online Starmap for The Ur-Quan Masters</h1>
+                <div>
+                    version <span data-bind="text: version"></span>
+                    <br><br>
+                    (c) 2015, 2016 Lebbeous Fogle-Weekley
+                    <br><br>
+                    This program is made possible by the efforts of those who
+                    have published other software which has inspired it, and
+                    without which this program would serve no purpose.  These
+                    software authors include, but are not limited to the
+                    contributors to The Ur-Quan Masters project, the developers
+                    of the original Star Control II (Toys for Bob), and CJ
+                    Kucera, the author of UQM Starmap Viewer.
+                    <br><br>
+                    This program is free software, licensed under the terms of
+                    the GNU General Public License (GPL) version 2.  You can
+                    find the source code and more information, such as the
+                    terms of the license, at:
+                    <br><br>
+                    <a target="_blank" href="https://github.com/senator/uqm-online-starmap">https://github.com/senator/uqm-online-starmap</a>
+                </div>
+
             </div>
         </div>
     </body>

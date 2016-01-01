@@ -232,7 +232,7 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
       }
     ).bind(this);
 
-    /* Returns a flattened version of words() with moons inlined. */
+    /* Returns a flattened version of worlds() with moons inlined. */
     this.worldsWithInlineSatellites = ko.computed(function() {
       return this.worlds().reduce(
         function(a, b) { a.push(b); return a.concat(b.moons); }, []);
@@ -267,7 +267,15 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
 
 
   function MenuViewModel(star_map) {
-    this.settings = function() { alert("XXX TODO"); },
+    this.show_settings = ko.observable(false);
+
+    this.close_settings = function close_settings() {
+      this.show_settings(false);
+    },
+
+    this.settings = function() {
+      this.show_settings(!this.show_settings());
+    },
 
     this.zoom_in = function() {
       var current = star_map.zoom();
@@ -291,6 +299,9 @@ define(["knockout", "starmap/constants"], function(ko, constants) {
        * Dedicated arrow keys, numeric keypad arrow keys, and old terminal/Vi
        * home-row hjkl keys are all for panning. + and - for zoom.  */
       switch (evt.keyCode) {
+        case 27:  // caught by different handler if system/world popup open
+          this.close_settings();
+          break;
         case 72:
         case 37:
         case 100:
