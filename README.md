@@ -8,6 +8,8 @@ The data in this application comes from the source code from UQM and from
 the UQM Starmap Viewer, and both the contributors to those projects and the
 legendary creators of the original game have my thanks.
 
+As of 1 January 2016, there is a copy of this program hosted at [starmap.lebbeo.us](http://starmap.lebbeo.us/)
+
 Licensing stuff
 ---------------
 

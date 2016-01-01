@@ -1,8 +1,8 @@
-define(["jquery", "knockout", "starmap/constants", "starmap/util",
+define(["./jquery", "./knockout", "starmap/constants", "starmap/util",
   "starmap/ui", "starmap/datamgr", "starmap/transform"],
   function($, ko, constants, util, ui, datamgr, transform) {
 
-  var VERSION = "0.9.0";
+  var VERSION = "0.9.1";
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
   var OTHER_ELEMENT_NAMES = ["readout", "popup", "settings"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
