@@ -1,8 +1,8 @@
-define(["./jquery", "./knockout", "starmap/constants", "starmap/util",
-  "starmap/ui", "starmap/datamgr", "starmap/transform"],
-  function($, ko, constants, util, ui, datamgr, transform) {
+define(["jquery", "knockout", "gamedata/condensed", "starmap/constants",
+  "starmap/util", "starmap/ui", "starmap/datamgr", "starmap/transform"],
+  function($, ko, gamedata, constants, util, ui, datamgr, transform) {
 
-  var VERSION = "0.9.1";
+  var VERSION = "0.9.2";
   var CANVAS_NAMES = ["underlay", "canvas", "overlay"];
   var OTHER_ELEMENT_NAMES = ["readout", "popup", "settings"];
   var HIT_THRESHOLD_MAP_UNITS = 100;
@@ -45,7 +45,7 @@ define(["./jquery", "./knockout", "starmap/constants", "starmap/util",
 
       this.start_ui();
 
-      this.prepare_game_data(opts.data);
+      this.prepare_game_data(gamedata);
 
       this.scale = new transform.Scale();
       this.offset = new transform.Offset();
@@ -333,8 +333,8 @@ define(["./jquery", "./knockout", "starmap/constants", "starmap/util",
     }
   };
 
-  /* exports */
-  return {
-    StarMap: StarMap
-  };
+  new StarMap({viewPortElement: document.documentElement});
+
+  /* exports (none) */
+  return {};
 });

@@ -1,4 +1,4 @@
-www/thirdparty/*.js
-www/lib/gamedata/*.js
+www/js/thirdparty/*.js
+www/js/gamedata/*.js
 *.swp
 config.mk

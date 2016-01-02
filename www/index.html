@@ -7,20 +7,7 @@
             href="css/portrait.css">
         <link rel="stylesheet" media="screen and (orientation: landscape)"
             href="css/landscape.css">
-        <script data-main="lib/app" src="thirdparty/require.js"></script>
-        <script>
-            require(["starmap", "gamedata/condensed"],
-                function(starmap, gamedata) {
-                $(document).ready(function() {
-                    // Stuff a reference to the star_map instance in the
-                    // global namespace for easier debugging.
-                    window.star_map = new starmap.StarMap({
-                        viewPortElement: document.documentElement,
-                        data: gamedata
-                    });
-                });
-            });
-        </script>
+        <script data-main="js/starmap" src="js/thirdparty/require.js"></script>
     </head>
     <body tabindex="2" data-bind="event: { keydown: popup.pop() ? null : menu.controls }">
         <nav id="menu" data-bind="with: menu">
